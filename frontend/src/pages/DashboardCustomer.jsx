@@ -146,11 +146,11 @@ function LuxuryPole3D() {
       groupRef.current.position.y = Math.sin(t * 1.1) * 0.12;
     }
 
-    if (poleRef.current?.material?.map) {
+    if (poleRef.current.material.map) {
       poleRef.current.material.map.offset.y -= delta * 0.25;
     }
 
-    if (glassRef.current?.material) {
+    if (glassRef.current.material) {
       const mat = glassRef.current.material;
       mat.opacity = 0.34 + Math.sin(t * 2.2) * 0.08;
       mat.emissive = new THREE.Color("#fefce8");
@@ -359,7 +359,7 @@ export default function DashboardCustomer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --- Polling histori booking ---
+// --- Booking history polling ---
   useEffect(() => {
     const interval = setInterval(() => {
       reloadBookings();
@@ -381,7 +381,7 @@ export default function DashboardCustomer() {
     }
   };
 
-  // --- Loyalty & rekomendasi barber ---
+// --- Loyalty & barber recommendations ---
   const completedCount = useMemo(
     () => bookings.filter((b) => b.status === "done").length,
     [bookings]
@@ -463,9 +463,9 @@ export default function DashboardCustomer() {
     setDeleteTarget(null);
     setEditDraft({
       id: booking.id,
-      barberId: booking.barber?.id || booking.barber_id,
-      serviceId: booking.service?.id || booking.service_id,
-      hairstyleId: booking.hairstyle?.id || booking.hairstyle_id || "",
+      barberId: booking.barber.id || booking.barber_id,
+      serviceId: booking.service.id || booking.service_id,
+      hairstyleId: booking.hairstyle.id || booking.hairstyle_id || "",
       date,
       time,
       couponCode: "",
@@ -482,7 +482,7 @@ export default function DashboardCustomer() {
   const handleUpdateBooking = async () => {
     if (!editDraft) return;
     if (!editDraft.barberId || !editDraft.serviceId || !editDraft.date || !editDraft.time) {
-      setModalError("Lengkapi barber, service, tanggal, dan jam.");
+      setModalError("Fill barber, service, date, and time first.");
       return;
     }
 
@@ -501,7 +501,7 @@ export default function DashboardCustomer() {
       setEditDraft(null);
       await reloadBookings(editDraft.id);
     } catch (err) {
-      const msg = err?.response?.data?.message || "Gagal memperbarui booking.";
+      const msg = err.response.data.message || "Failed to update booking.";
       setModalError(msg);
     } finally {
       setSavingEdit(false);
@@ -518,7 +518,7 @@ export default function DashboardCustomer() {
       setDeleteTarget(null);
       await reloadBookings();
     } catch (err) {
-      const msg = err?.response?.data?.message || "Gagal membatalkan booking.";
+      const msg = err.response.data.message || "Failed to cancel booking.";
       setModalError(msg);
     } finally {
       setDeleteLoadingId(null);
@@ -547,12 +547,12 @@ export default function DashboardCustomer() {
 
       const { data } = await http.post("/bookings", payload);
       setLastBooking(data || null);
-      await reloadBookings(data?.id);
+      await reloadBookings(data.id);
     } catch (err) {
       console.error(err);
       const msg =
-        err?.response?.data?.message ||
-        "Gagal membuat booking. Pastikan waktu dalam jam buka (07:00–21:00).";
+        err.response.data.message ||
+        "Failed to create a booking. Ensure the time is within operating hours (07:00-21:00).";
       setErrorMsg(msg);
     } finally {
       setLoadingBooking(false);
@@ -578,7 +578,7 @@ export default function DashboardCustomer() {
       <div className="relative min-h-screen bg-[#181411] text-amber-50 flex flex-col overflow-hidden pt-16 font-modern">
         {/* CSS INJECTION */}
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+          @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
           .font-royal { 
             font-family: 'Cinzel', serif; 
@@ -762,8 +762,7 @@ export default function DashboardCustomer() {
                 )}
               </div>
               <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-                Pesan antrian, pilih barber favorit, dan pantau loyalty-mu
-                disini.
+                Book your slot, choose your favorite barber, and track your loyalty progress here.
               </div>
             </div>
           </motion.div>
@@ -808,7 +807,7 @@ export default function DashboardCustomer() {
                     <span className="h-[1px] w-10 bg-gradient-to-r from-amber-500 to-transparent" />
                   </div>
                   <div className="font-semibold text-sm text-soft-gold">
-                    {completedCount} / 7 kunjungan
+                    {completedCount} / 7 visits
                   </div>
                   <div className="mt-2 w-full h-1.5 rounded-full bg-black/60 overflow-hidden">
                     <div
@@ -819,16 +818,15 @@ export default function DashboardCustomer() {
                   <div className="mt-1.5 text-[11px] text-amber-100/75 font-modern">
                     {hasLoyaltyCoupon ? (
                       <span className="text-emerald-300">
-                        Kamu berhak mendapatkan loyalty coupon! Cek saat
-                        pembayaran.
+                        You qualify for a loyalty coupon! Check during payment.
                       </span>
                     ) : (
                       <>
-                        Sisa{" "}
+                        Only{" "}
                         <span className="text-soft-gold font-semibold">
                           {Math.max(0, 7 - completedCount)}
                         </span>{" "}
-                        kunjungan lagi untuk kupon spesial.
+                        more visits until your special coupon.
                       </>
                     )}
                   </div>
@@ -855,14 +853,13 @@ export default function DashboardCustomer() {
                   </div>
                   <div className="font-modern text-soft-gold text-sm font-semibold">
                     {recommendedBarber
-                      ? recommendedBarber.display_name ||
-                        recommendedBarber.user?.name
-                      : "Belum ada favorit"}
+                      ? recommendedBarber.display_name || recommendedBarber.user?.name
+                      : "No favorites yet"}
                   </div>
                   <div className="mt-1 text-[11px] text-amber-100/75">
                     {recommendedBarber
-                      ? "Berbasis histori booking"
-                      : "Selesaikan beberapa booking dulu untuk dapat rekomendasi barber."}
+                      ? "Based on booking history."
+                      : "Complete a few bookings to get a recommended barber."}
                   </div>
                 </div>
               </motion.div>
@@ -878,25 +875,23 @@ export default function DashboardCustomer() {
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-1">
                     <div className="text-[10px] font-tech tracking-[0.25em] text-amber-300/90">
-                      STATUS ANTRIAN
+                      QUEUE STATUS
                     </div>
                   </div>
-                  <div
-                    className={`font-semibold text-sm ${
-                      activeBooking ? "text-emerald-300" : "text-amber-200"
-                    }`}
-                  >
+                <div
+                  className={`font-semibold text-sm ${
+                    activeBooking ? "text-emerald-300" : "text-amber-200"
+                  }`}
+                >
                     {activeBooking
-                      ? `#${activeBooking.queue_number || "-"} · ${
-                          activeBooking.status
-                        }`
-                      : "Tidak ada booking aktif"}
-                  </div>
-                  <div className="mt-1 text-[11px] text-amber-100/75">
+                      ? `#${activeBooking.queue_number || "-"}  ${activeBooking.status}`
+                      : "No active booking"}
+                </div>
+                <div className="mt-1 text-[11px] text-amber-100/75">
                     {activeBooking
-                      ? "Silakan datang sesuai jadwal. Tunjukkan kode booking di kasir."
-                      : "Buat booking baru dari panel di bawah."}
-                  </div>
+                      ? "Please arrive according to the schedule. Show your booking code at the counter."
+                      : "Create a new booking from the panel below."}
+                </div>
                 </div>
               </motion.div>
             </div>
@@ -921,7 +916,7 @@ export default function DashboardCustomer() {
                           BOOKING PANEL
                         </div>
                         <p className="text-[11px] text-amber-100/70 font-modern max-w-md">
-                          Pilih barber, layanan, dan waktu.
+                          Choose a barber, service, and time.
                         </p>
                       </div>
                     </div>
@@ -941,7 +936,7 @@ export default function DashboardCustomer() {
                       {/* Barber selection */}
                       <div className="space-y-1.5">
                         <label className="text-amber-100/85 font-tech">
-                          PILIH BARBER
+                          Choose a barber
                         </label>
                         <div className="flex gap-2 overflow-x-auto custom-scroll pb-1">
                           {barbers.map((b) => (
@@ -962,7 +957,7 @@ export default function DashboardCustomer() {
                           ))}
                           {!barbers.length && (
                             <div className="text-amber-100/70">
-                              Tidak ada barber tersedia.
+                              No barbers available.
                             </div>
                           )}
                         </div>
@@ -977,7 +972,7 @@ export default function DashboardCustomer() {
                             setSelectedBarber(found);
                           }}
                         >
-                          <option value="">— pilih barber —</option>
+                          <option value=""> choose a barber </option>
                           {barbers.map((b) => (
                             <option key={b.id} value={b.id}>
                               {b.display_name || b.user?.name} (ID: {b.id})
@@ -989,7 +984,7 @@ export default function DashboardCustomer() {
                       {/* Service selection */}
                       <div className="space-y-1.5">
                         <label className="text-amber-100/85 font-tech">
-                          PILIH SERVICE
+                          Choose a service
                         </label>
                         <div className="flex gap-2 overflow-x-auto custom-scroll pb-1">
                           {services.map((s) => (
@@ -1010,7 +1005,7 @@ export default function DashboardCustomer() {
                           ))}
                           {!services.length && (
                             <div className="text-amber-100/70">
-                              Tidak ada service tersedia.
+                              No services available.
                             </div>
                           )}
                         </div>
@@ -1025,7 +1020,7 @@ export default function DashboardCustomer() {
                             setSelectedService(found);
                           }}
                         >
-                          <option value="">— pilih service —</option>
+                          <option value=""> choose a service </option>
                           {services.map((s) => (
                             <option key={s.id} value={s.id}>
                               {s.name} (ID: {s.id})
@@ -1037,7 +1032,7 @@ export default function DashboardCustomer() {
                       {/* Hairstyle selection */}
                       <div className="space-y-1.5">
                         <label className="text-amber-100/85 font-tech">
-                          PILIH HAIRSTYLE (OPSIONAL)
+                          CHOOSE A HAIRSTYLE (Optional)
                         </label>
                         <div className="rounded-xl border border-amber-900/70 bg-[#0b0705]/70 p-2 max-h-60 overflow-y-auto custom-scroll">
                           {hairstyles.length ? (
@@ -1048,7 +1043,7 @@ export default function DashboardCustomer() {
                             />
                           ) : (
                             <div className="text-amber-100/70">
-                              Tidak ada hairstyle tersedia.
+                              No hairstyles available.
                             </div>
                           )}
                         </div>
@@ -1063,7 +1058,7 @@ export default function DashboardCustomer() {
                             setSelectedHairstyle(found);
                           }}
                         >
-                          <option value="">(Opsional) pilih hairstyle</option>
+                          <option value="">(Optional) choose a hairstyle</option>
                           {hairstyles.map((h) => (
                             <option key={h.id} value={h.id}>
                               {h.name}
@@ -1076,7 +1071,7 @@ export default function DashboardCustomer() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="text-amber-100/85 font-tech">
-                            TANGGAL
+                            DATE
                           </label>
                           <input
                             type="date"
@@ -1089,7 +1084,7 @@ export default function DashboardCustomer() {
                         </div>
                         <div>
                           <label className="text-amber-100/85 font-tech">
-                            JAM
+                            TIME
                           </label>
                           <input
                             type="time"
@@ -1099,7 +1094,7 @@ export default function DashboardCustomer() {
                             required
                           />
                           <p className="mt-1 text-[10px] text-amber-100/60">
-                            Pastikan di antara 07:00–21:00.
+                            Make sure it is between 07:00 and 21:00.
                           </p>
                         </div>
                       </div>
@@ -1108,7 +1103,7 @@ export default function DashboardCustomer() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="text-amber-100/85 font-tech">
-                            KODE KUPON (OPSIONAL)
+                            COUPON CODE (Optional)
                           </label>
                           <input
                             type="text"
@@ -1119,7 +1114,7 @@ export default function DashboardCustomer() {
                                 .slice(0, 30);
                               setCouponCode(onlyDigits);
                             }}
-                            placeholder="isi jika punya kupon"
+                            placeholder="Enter a coupon code if you have one"
                             inputMode="numeric"
                             maxLength={30}
                             className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none"
@@ -1127,7 +1122,7 @@ export default function DashboardCustomer() {
                         </div>
                         <div>
                           <label className="text-amber-100/85 font-tech">
-                            CATATAN UNTUK BARBER
+                            NOTE FOR BARBER
                           </label>
                           <input
                             type="text"
@@ -1135,12 +1130,12 @@ export default function DashboardCustomer() {
                             onChange={(e) =>
                               setNote(e.target.value.slice(0, 255))
                             }
-                            placeholder="misal: tolong rapikan jenggot"
+                            placeholder="e.g., Please tidy the beard"
                             maxLength={255}
                             className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none"
                           />
                           <p className="mt-1 text-[10px] text-amber-100/60">
-                            Maksimal 255 karakter.
+                            Max 255 characters.
                           </p>
                         </div>
                       </div>
@@ -1148,7 +1143,7 @@ export default function DashboardCustomer() {
                       <div className="rounded-lg border border-amber-900/70 bg-[#0b0705]/80 px-3 py-2 space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="text-amber-100/75 font-medium">
-                            Estimasi total (barber + layanan)
+                            Estimated total (barber + service)
                           </span>
                           <span className="text-amber-200 font-semibold text-sm">
                             {hasSelection
@@ -1158,8 +1153,8 @@ export default function DashboardCustomer() {
                         </div>
                         <div className="text-[10px] text-amber-100/60">
                           {hasSelection
-                            ? `Barber: Rp ${priceBreakdown.barberBase.toLocaleString("id-ID")} · Service: Rp ${priceBreakdown.serviceBase.toLocaleString("id-ID")} · Skill: +Rp ${priceBreakdown.skillPremium.toLocaleString("id-ID")}`
-                            : "Lengkapi barber & service untuk melihat estimasi harga."}
+                            ? `Barber: Rp ${priceBreakdown.barberBase.toLocaleString("id-ID")}  Service: Rp ${priceBreakdown.serviceBase.toLocaleString("id-ID")}  Skill: +Rp ${priceBreakdown.skillPremium.toLocaleString("id-ID")}`
+                            : "Select a barber & service to view the price estimate."}
                         </div>
                       </div>
 
@@ -1168,7 +1163,7 @@ export default function DashboardCustomer() {
                         disabled={loadingBooking}
                         className="mt-2 inline-flex items-center justify-center rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech tracking-[0.25em] text-[#2b190b] hover:bg-amber-300 disabled:opacity-60 uppercase shadow-[0_0_20px_rgba(251,191,36,0.5)]"
                       >
-                        {loadingBooking ? "MEMPROSES..." : "BUAT BOOKING"}
+                        {loadingBooking ? "PROCESSING..." : "CREATE BOOKING"}
                       </button>
                     </form>
                   </div>
@@ -1185,7 +1180,7 @@ export default function DashboardCustomer() {
                     <div className="relative z-10 space-y-1">
                       <div className="flex items-center justify-between mb-1">
                         <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                          Booking Terakhir
+                          Last Booking
                         </div>
                         {lastBooking && (
                           <span className="font-tech text-[9px] tracking-[0.22em] text-emerald-300 uppercase">
@@ -1195,7 +1190,7 @@ export default function DashboardCustomer() {
                       </div>
                       <div className="text-amber-100/80 font-modern text-[11px] space-y-1.5">
                         <div>
-                          Kode:{" "}
+                          Code:{" "}
                           <span className="text-soft-gold font-semibold">
                             {lastBooking.code || lastBooking.id}
                           </span>
@@ -1217,11 +1212,11 @@ export default function DashboardCustomer() {
                         <div>
                           Hairstyle:{" "}
                           <span className="text-amber-200">
-                            {lastBooking.hairstyle?.name || "Opsional"}
+                            {lastBooking.hairstyle?.name || "Optional"}
                           </span>
                         </div>
                         <div>
-                          Jadwal:{" "}
+                          Schedule:{" "}
                           <span className="text-amber-200">
                             {lastBooking.scheduled_at || "-"}
                           </span>
@@ -1229,7 +1224,7 @@ export default function DashboardCustomer() {
                         <div>
                           Total:{" "}
                           <span className="text-soft-gold font-semibold">
-                            Rp {Number(lastBooking.total_price ?? 0).toLocaleString("id-ID")}
+                            Rp {Number(lastBooking.total_price || 0).toLocaleString("id-ID")}
                           </span>
                         </div>
                       </div>
@@ -1256,7 +1251,7 @@ export default function DashboardCustomer() {
                           BOOKING STATUS PANEL
                         </div>
                         <p className="text-[11px] text-amber-100/70 font-modern max-w-xs">
-                          Lihat booking aktif & riwayatmu.
+                          View your active booking and history.
                         </p>
                       </div>
                       <div className="flex flex-wrap justify-end gap-2">
@@ -1265,7 +1260,7 @@ export default function DashboardCustomer() {
                           onClick={scrollToCreateForm}
                           className="rounded-full border border-amber-500/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-100 hover:bg-amber-500/10"
                         >
-                          BUAT
+                          Create
                         </button>
                         <button
                           type="button"
@@ -1273,7 +1268,7 @@ export default function DashboardCustomer() {
                           onClick={() => activeBooking && openViewBooking(activeBooking)}
                           className="rounded-full border border-amber-500/50 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-100 hover:bg-amber-500/10 disabled:opacity-40"
                         >
-                          LIHAT
+                          View
                         </button>
                         <button
                           type="button"
@@ -1281,7 +1276,7 @@ export default function DashboardCustomer() {
                           onClick={() => activeBooking && openEditBooking(activeBooking)}
                           className="rounded-full border border-amber-400/60 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-50 hover:bg-amber-400/10 disabled:opacity-40"
                         >
-                          EDIT
+                          Edit
                         </button>
                         <button
                           type="button"
@@ -1289,21 +1284,21 @@ export default function DashboardCustomer() {
                           onClick={() => activeBooking && openDeleteConfirm(activeBooking)}
                           className="rounded-full border border-red-500/60 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-red-200 hover:bg-red-500/10 disabled:opacity-40"
                         >
-                          HAPUS
+                          Delete
                         </button>
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-3 h-full">
-                      {/* BOX: BOOKING AKTIF & STATUS ANTRIAN */}
+                      {/* BOX: Active booking & queue status */}
                       <div className="rounded-xl border border-emerald-600/70 bg-gradient-to-br from-[#051610]/95 via-[#04110c]/95 to-black/90 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.9)]">
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <div>
                             <div className="font-tech text-[10px] text-emerald-300/90 tracking-[0.25em]">
-                              BOOKING AKTIF
+                              ACTIVE BOOKING
                             </div>
                             <div className="font-vintage text-base text-gold-gradient text-glow-gold">
-                              Status Antrian
+                              QUEUE STATUS
                             </div>
                           </div>
                         </div>
@@ -1312,13 +1307,13 @@ export default function DashboardCustomer() {
                           <>
                             <div className="text-emerald-100/90 font-modern text-[11px] space-y-1.5">
                               <div>
-                                Kode:{" "}
+                                Code:{" "}
                                 <span className="text-soft-gold font-semibold">
                                   {activeBooking.code || activeBooking.id}
                                 </span>
                               </div>
                               <div>
-                                No. Antrian:{" "}
+                                Queue No.:{" "}
                                 <span className="text-emerald-300 font-semibold">
                                   {activeBooking.queue_number || "-"}
                                 </span>
@@ -1340,11 +1335,11 @@ export default function DashboardCustomer() {
                               <div>
                                 Hairstyle:{" "}
                                 <span className="text-emerald-200">
-                                  {activeBooking.hairstyle?.name || "Opsional"}
+                                  {activeBooking.hairstyle?.name || "Optional"}
                                 </span>
                               </div>
                               <div>
-                                Jadwal:{" "}
+                                Schedule:{" "}
                                 <span className="text-emerald-200">
                                   {activeBooking.scheduled_at || "-"}
                                 </span>
@@ -1352,7 +1347,7 @@ export default function DashboardCustomer() {
                               <div>
                                 Total:{" "}
                                 <span className="text-emerald-200 font-semibold">
-                                  Rp {Number(activeBooking.total_price ?? 0).toLocaleString("id-ID")}
+                                  Rp {Number(activeBooking.total_price || 0).toLocaleString("id-ID")}
                                 </span>
                               </div>
                               <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -1364,7 +1359,7 @@ export default function DashboardCustomer() {
                                 </span>
 
                                 <span className="text-emerald-300">
-                                  · Pembayaran:{" "}
+                                  Payment:{" "}
                                   <span
                                     className={`font-semibold ${
                                       activeBooking.payment_status === "paid"
@@ -1384,7 +1379,7 @@ export default function DashboardCustomer() {
                               </div>
                             </div>
 
-                            {/* tombol bayar hanya jika belum paid */}
+                            {/* Show payment button only when unpaid */}
                             {activeBooking.payment_status !== "paid" && (
                               <div className="mt-3">
                                 <PaymentButton
@@ -1396,25 +1391,24 @@ export default function DashboardCustomer() {
 
                             {activeBooking.payment_status === "paid" && (
                               <div className="mt-3 text-[10px] text-emerald-200/80 font-modern">
-                                Pembayaran sudah{" "}
-                                <span className="font-semibold">lunas</span>.
-                                Terima kasih!
+                                Payment is{" "}
+                                <span className="font-semibold">settled</span>.
+                                Thank you!
                               </div>
                             )}
                           </>
                         ) : (
                           <div className="text-emerald-50/80 text-[11px] font-modern">
-                            Tidak ada booking aktif. Buat booking baru di panel
-                            sebelah kiri.
+                            No active booking. Create a new one from the left panel.
                           </div>
                         )}
                       </div>
 
-                      {/* BOX: RIWAYAT BOOKING */}
+                      {/* BOX: Booking History */}
                       <div className="rounded-xl border border-amber-900/60 bg-[#1b130f]/95 p-3">
                         <div className="flex items-center justify-between mb-2 gap-2">
                           <div className="font-vintage text-base text-gold-gradient text-glow-gold">
-                            Riwayat Booking ({bookings.length})
+                            Booking History ({bookings.length})
                           </div>
                         </div>
                         <div className="max-h-[40vh] overflow-y-auto custom-scroll space-y-2 pr-1">
@@ -1425,35 +1419,35 @@ export default function DashboardCustomer() {
                             >
                               <div className="space-y-0.5">
                                 <div className="font-modern text-soft-gold text-[11px] font-semibold">
-                                  {b.code || `Booking #${b.id}`}
-                                </div>
-                                <div className="text-[11px] text-amber-100/80">
-                                  Barber:{" "}
-                                  <span className="text-amber-200">
-                                    {b.barber?.display_name ||
-                                      b.barber?.user?.name ||
-                                      "-"}
-                                  </span>
-                                </div>
-                                <div className="text-[11px] text-amber-100/80">
-                                  Service:{" "}
-                                  <span className="text-amber-200">
-                                    {b.service?.name || "-"}
-                                  </span>
-                                </div>
-                                <div className="text-[11px] text-amber-100/80">
-                                  Hairstyle:{" "}
-                                  <span className="text-amber-200">
-                                    {b.hairstyle?.name || "Opsional"}
-                                  </span>
-                                </div>
+                              {b.code || `Booking #${b.id}`}
+                            </div>
+                            <div className="text-[11px] text-amber-100/80">
+                              Barber:{" "}
+                              <span className="text-amber-200">
+                                {b.barber?.display_name ||
+                                  b.barber?.user?.name ||
+                                  "-"}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-amber-100/80">
+                              Service:{" "}
+                              <span className="text-amber-200">
+                                {b.service?.name || "-"}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-amber-100/80">
+                              Hairstyle:{" "}
+                              <span className="text-amber-200">
+                                {b.hairstyle?.name || "Optional"}
+                              </span>
+                            </div>
                               <div className="text-[10px] text-amber-100/70">
-                                Jadwal: {b.scheduled_at || "-"}
+                                Schedule: {b.scheduled_at || "-"}
                               </div>
                               <div className="text-[11px] text-amber-100/80">
                                 Total:{" "}
                                 <span className="text-soft-gold font-semibold">
-                                  Rp {Number(b.total_price ?? 0).toLocaleString("id-ID")}
+                                  Rp {Number(b.total_price || 0).toLocaleString("id-ID")}
                                 </span>
                               </div>
                             </div>
@@ -1463,7 +1457,7 @@ export default function DashboardCustomer() {
                                   b.status === "done"
                                     ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/70"
                                     : b.status === "cancelled"
-                                      ? "bg-red-500/10 text-red-300 border border-red-500/60"
+                                    ? "bg-red-500/10 text-red-300 border border-red-500/60"
                                       : "bg-amber-500/10 text-amber-200 border border-amber-500/60"
                                   }`}
                                 >
@@ -1471,13 +1465,13 @@ export default function DashboardCustomer() {
                                 </span>
 
                                 <span
-                                  className={`px-2 py-[2px] rounded-full font-tech tracking-[0.18em] ${
-                                    b.payment_status === "paid"
-                                      ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/70"
+                                className={`px-2 py-[2px] rounded-full font-tech tracking-[0.18em] ${
+                                  b.payment_status === "paid"
+                                    ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/70"
                                       : b.payment_status === "pending"
-                                      ? "bg-amber-500/10 text-amber-200 border border-amber-500/60"
+                                    ? "bg-amber-500/10 text-amber-200 border border-amber-500/60"
                                       : b.payment_status === "failed"
-                                      ? "bg-red-500/10 text-red-300 border border-red-500/60"
+                                    ? "bg-red-500/10 text-red-300 border border-red-500/60"
                                       : "bg-slate-500/10 text-slate-200 border border-slate-500/60"
                                   }`}
                               >
@@ -1490,7 +1484,7 @@ export default function DashboardCustomer() {
                                   onClick={() => openViewBooking(b)}
                                   className="rounded-full border border-amber-500/60 px-2 py-[2px] font-tech tracking-[0.16em] text-amber-100 hover:bg-amber-500/10"
                                 >
-                                  Lihat
+                                  View
                                 </button>
                                 {b.status === "waiting" && b.payment_status !== "paid" && (
                                   <>
@@ -1506,7 +1500,7 @@ export default function DashboardCustomer() {
                                       onClick={() => openDeleteConfirm(b)}
                                       className="rounded-full border border-red-500/60 px-2 py-[2px] font-tech tracking-[0.16em] text-red-200 hover:bg-red-500/10"
                                     >
-                                      Hapus
+                                      Delete
                                     </button>
                                   </>
                                 )}
@@ -1516,7 +1510,7 @@ export default function DashboardCustomer() {
                         ))}
                           {!bookings.length && (
                             <div className="text-amber-100/75 font-modern text-[11px]">
-                              Belum ada histori booking.
+                              No booking history yet.
                             </div>
                           )}
                         </div>
@@ -1534,7 +1528,7 @@ export default function DashboardCustomer() {
       {portalTarget &&
         createPortal(
           <>
-            {/* Modal: Lihat detail booking */}
+            {/* Modal: View booking detail */}
             {viewBooking && (
               <div className="fixed inset-0 z-[999] flex items-center justify-center px-4">
                 <div
@@ -1548,10 +1542,10 @@ export default function DashboardCustomer() {
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div>
                       <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                        Detail Booking
+                        Booking Details
                       </div>
                       <p className="text-[11px] text-amber-100/70 font-modern">
-                        Cek detail pesananmu.
+                        Review your order details.
                       </p>
                     </div>
                     <button
@@ -1567,7 +1561,7 @@ export default function DashboardCustomer() {
                   </div>
                   <div className="space-y-1 text-[11px] text-amber-100/85 font-modern">
                     <div>
-                      Kode:{" "}
+                      Code:{" "}
                       <span className="text-soft-gold font-semibold">
                         {viewBooking.code || viewBooking.id}
                       </span>
@@ -1581,19 +1575,19 @@ export default function DashboardCustomer() {
                       </span>
                     </div>
                     <div>
-                      Service:{" "}
-                      <span className="text-amber-200">
-                        {viewBooking.service?.name || "-"}
-                      </span>
-                    </div>
+                        Service:{" "}
+                        <span className="text-amber-200">
+                          {viewBooking.service?.name || "-"}
+                        </span>
+                      </div>
+                      <div>
+                        Hairstyle:{" "}
+                        <span className="text-amber-200">
+                          {viewBooking.hairstyle?.name || "Optional"}
+                        </span>
+                      </div>
                     <div>
-                      Hairstyle:{" "}
-                      <span className="text-amber-200">
-                        {viewBooking.hairstyle?.name || "Opsional"}
-                      </span>
-                    </div>
-                    <div>
-                      Jadwal:{" "}
+                      Schedule:{" "}
                       <span className="text-amber-200">
                         {viewBooking.scheduled_at || "-"}
                       </span>
@@ -1601,7 +1595,7 @@ export default function DashboardCustomer() {
                     <div>
                       Total:{" "}
                       <span className="text-soft-gold font-semibold">
-                        Rp {Number(viewBooking.total_price ?? 0).toLocaleString("id-ID")}
+                        Rp {Number(viewBooking.total_price || 0).toLocaleString("id-ID")}
                       </span>
                     </div>
                     <div>
@@ -1609,7 +1603,7 @@ export default function DashboardCustomer() {
                       <span className="text-amber-200 font-semibold">
                         {viewBooking.status}
                       </span>{" "}
-                      Pembayaran:{" "}
+                      Payment:{" "}
                       <span className="text-amber-200 font-semibold">
                         {viewBooking.payment_status || "unpaid"}
                       </span>
@@ -1619,7 +1613,7 @@ export default function DashboardCustomer() {
               </div>
             )}
 
-            {/* Modal: Edit booking */}
+            {/* Modal: Edit Booking */}
             {editDraft && (
               <div className="fixed inset-0 z-[999] flex items-center justify-center px-4">
                 <div
@@ -1636,7 +1630,7 @@ export default function DashboardCustomer() {
                         Edit Booking
                       </div>
                       <p className="text-[11px] text-amber-100/70 font-modern">
-                        Ubah barber, layanan, atau jadwalmu.
+                        Change barber, service, or schedule.
                       </p>
                     </div>
                     <button
@@ -1673,7 +1667,7 @@ export default function DashboardCustomer() {
                             }))
                           }
                         >
-                          <option value="">- pilih barber -</option>
+                          <option value="">- Choose a barber -</option>
                           {barbers.map((b) => (
                             <option key={b.id} value={b.id}>
                               {b.display_name || b.user?.name || `Barber #${b.id}`}
@@ -1695,7 +1689,7 @@ export default function DashboardCustomer() {
                             }))
                           }
                         >
-                          <option value="">- pilih service -</option>
+                          <option value="">- Choose a service -</option>
                           {services.map((s) => (
                             <option key={s.id} value={s.id}>
                               {s.name} (ID: {s.id})
@@ -1707,7 +1701,7 @@ export default function DashboardCustomer() {
 
                     <div className="space-y-1">
                       <label className="text-amber-100/85 font-tech">
-                        HAIRSTYLE (OPSIONAL)
+                        HAIRSTYLE (Optional)
                       </label>
                       <select
                         className="w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none"
@@ -1719,7 +1713,7 @@ export default function DashboardCustomer() {
                           }))
                         }
                       >
-                        <option value="">- pilih hairstyle -</option>
+                        <option value="">- choose a hairstyle -</option>
                         {hairstyles.map((h) => (
                           <option key={h.id} value={h.id}>
                             {h.name}
@@ -1731,7 +1725,7 @@ export default function DashboardCustomer() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="space-y-1">
                         <label className="text-amber-100/85 font-tech">
-                          TANGGAL
+                          DATE
                         </label>
                         <input
                           type="date"
@@ -1747,7 +1741,7 @@ export default function DashboardCustomer() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-amber-100/85 font-tech">JAM</label>
+                        <label className="text-amber-100/85 font-tech">TIME</label>
                         <input
                           type="time"
                           value={editDraft.time}
@@ -1764,7 +1758,7 @@ export default function DashboardCustomer() {
 
                     <div className="space-y-1">
                       <label className="text-amber-100/85 font-tech">
-                        KODE KUPON (OPSIONAL)
+                        COUPON CODE (Optional)
                       </label>
                       <input
                         type="text"
@@ -1775,7 +1769,7 @@ export default function DashboardCustomer() {
                             couponCode: e.target.value.replace(/[^0-9]/g, "").slice(0, 30),
                           }))
                         }
-                        placeholder="isi jika ingin pakai kupon baru"
+                        placeholder="Enter a new coupon code if needed"
                         className="w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none"
                       />
                     </div>
@@ -1789,7 +1783,7 @@ export default function DashboardCustomer() {
                         }}
                         className="rounded-lg border border-amber-800/70 px-3 py-1 text-[10px] font-tech tracking-[0.18em] text-amber-100 hover:bg-amber-500/5"
                       >
-                        Batal
+                        Cancel
                       </button>
                       <button
                         type="button"
@@ -1797,7 +1791,7 @@ export default function DashboardCustomer() {
                         onClick={handleUpdateBooking}
                         className="rounded-lg border border-emerald-500/70 bg-emerald-500/10 px-4 py-1 text-[10px] font-tech tracking-[0.18em] text-emerald-100 hover:bg-emerald-500/20 disabled:opacity-50"
                       >
-                        {savingEdit ? "MENYIMPAN..." : "SIMPAN PERUBAHAN"}
+                        {savingEdit ? "SAVING..." : "SAVE CHANGES"}
                       </button>
                     </div>
                   </div>
@@ -1805,7 +1799,7 @@ export default function DashboardCustomer() {
               </div>
             )}
 
-            {/* Modal: Konfirmasi hapus */}
+            {/* Modal: Confirm cancellation */}
             {deleteTarget && (
               <div className="fixed inset-0 z-[999] flex items-center justify-center px-4">
                 <div
@@ -1817,10 +1811,10 @@ export default function DashboardCustomer() {
                 />
                 <div className="relative w-full max-w-sm rounded-2xl border border-amber-900/70 bg-[#0b0705]/95 p-5 shadow-[0_24px_60px_rgba(0,0,0,0.95)]">
                   <div className="font-vintage text-lg text-gold-gradient text-glow-gold mb-2">
-                    Batalkan Booking?
+                    Cancel Booking
                   </div>
                   <p className="text-[11px] text-amber-100/75 font-modern mb-3">
-                    Pesanan <span className="text-soft-gold font-semibold">{deleteTarget.code || deleteTarget.id}</span> akan dibatalkan. Lanjutkan?
+                    Order <span className="text-soft-gold font-semibold">{deleteTarget.code || deleteTarget.id}</span> will be cancelled. Continue?
                   </p>
                   {modalError && (
                     <div className="mb-2 rounded-lg border border-red-500/70 bg-red-500/10 px-3 py-2 text-[11px] text-red-200 font-modern">
@@ -1836,7 +1830,7 @@ export default function DashboardCustomer() {
                       }}
                       className="rounded-lg border border-amber-800/70 px-3 py-1 text-[10px] font-tech tracking-[0.18em] text-amber-100 hover:bg-amber-500/5"
                     >
-                      Batal
+                      Cancel
                     </button>
                     <button
                       type="button"
@@ -1844,7 +1838,7 @@ export default function DashboardCustomer() {
                       onClick={handleDeleteBooking}
                       className="rounded-lg border border-red-500/70 bg-red-500/10 px-4 py-1 text-[10px] font-tech tracking-[0.18em] text-red-100 hover:bg-red-500/20 disabled:opacity-50"
                     >
-                      {deleteLoadingId === deleteTarget.id ? "MEMBATALKAN..." : "YA, HAPUS"}
+                      {deleteLoadingId === deleteTarget.id ? "CANCELLING..." : "YES, Delete"}
                     </button>
                   </div>
                 </div>

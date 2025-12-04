@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barber;
 use App\Models\Booking;
 use App\Models\BusinessHour;
 use App\Models\Coupon;
 use App\Models\Promo;
 use App\Models\Service;
-use App\Models\Barber;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class BookingController extends Controller
 {
     /**
      * GET /api/queue
-     * Tampilkan antrian hari ini (dipakai untuk layar antrian real-time).
+     * Show today's queue (used for the real-time queue screen).
      */
     public function queue(Request $request)
     {
@@ -31,7 +31,7 @@ class BookingController extends Controller
 
     /**
      * POST /api/bookings
-     * Customer membuat booking + ambil nomor antrian.
+     * Customer creates a booking and takes a queue number.
      */
     public function store(Request $request)
     {
@@ -47,26 +47,26 @@ class BookingController extends Controller
 
         $scheduledAt = Carbon::parse($data['scheduled_at']);
 
-        // 1. Validasi jam buka (07:00–21:00, via business_hours)
+        // Validate business hours (07:00-21:00 via business_hours)
         if (!$this->isWithinBusinessHours($scheduledAt)) {
             return response()->json([
-                'message' => 'Booking di luar jam operasional. Barbershop buka 07:00–21:00.',
+                'message' => 'Booking is outside operating hours. The shop is open 07:00-21:00.',
             ], 422);
         }
 
         $bookingDate = $scheduledAt->toDateString();
 
-        // 2. Hitung queue_number harian (reset per hari)
-        $lastQueue = Booking::whereDate('booking_date', $bookingDate)->max('queue_number');
+        // Calculate daily queue_number (reset each day)
+        $lastQueue   = Booking::whereDate('booking_date', $bookingDate)->max('queue_number');
         $queueNumber = $lastQueue ? $lastQueue + 1 : 1;
 
         $service = Service::findOrFail($data['service_id']);
         $barber  = Barber::findOrFail($data['barber_id']);
 
-        // 3. Harga dasar = service + base price barber (+ premium skill), lalu promo/kupon
+        // Base price = service + barber base price (+ skill premium), then apply promo/coupon
         $price = $this->calculateBasePrice($service, $barber, $bookingDate);
 
-        // 4. Kupon loyalty (kalau diisi)
+        // Loyalty coupon (if provided)
         $appliedCoupon = null;
         if (!empty($data['coupon_code'])) {
             $appliedCoupon = Coupon::where('code', $data['coupon_code'])
@@ -74,13 +74,13 @@ class BookingController extends Controller
                 ->where('is_used', false)
                 ->where(function ($q) {
                     $q->whereNull('expires_at')
-                      ->orWhere('expires_at', '>=', now());
+                        ->orWhere('expires_at', '>=', now());
                 })
                 ->first();
 
             if (!$appliedCoupon) {
                 return response()->json([
-                    'message' => 'Kupon tidak valid atau sudah kadaluarsa.',
+                    'message' => 'Coupon is invalid or expired.',
                 ], 422);
             }
 
@@ -101,7 +101,7 @@ class BookingController extends Controller
             'payment_status' => 'unpaid',
         ]);
 
-        // kirim kembali booking beserta relasi agar frontend langsung punya barber/service terpilih
+        // Return booking with relations so the frontend has barber/service preloaded
         $booking->load([
             'barber.user',
             'service',
@@ -114,18 +114,18 @@ class BookingController extends Controller
 
     /**
      * GET /api/bookings/my
-     * Booking milik customer yang login.
+     * Bookings owned by the logged-in customer.
      */
     public function myBookings(Request $request)
     {
         $user = $request->user();
 
         $bookings = Booking::with([
-                'barber.user',   // supaya dapat nama barber dari user
+                'barber.user',   // fetch barber name from user
                 'service',
                 'hairstyle',
                 'review',
-                'payment',       // 1 payment terbaru (relasi latestOfMany)
+                'payment',       // latest payment (latestOfMany relation)
             ])
             ->where('customer_id', $user->id)
             ->orderBy('created_at', 'desc')
@@ -136,7 +136,7 @@ class BookingController extends Controller
 
     /**
      * PUT /api/bookings/{booking}
-     * Customer mengubah jadwal/layanan sebelum dikerjakan.
+     * Customer updates schedule/service before the booking is processed.
      */
     public function update(Request $request, Booking $booking)
     {
@@ -148,13 +148,13 @@ class BookingController extends Controller
 
         if (in_array($booking->status, ['in_progress', 'done', 'cancelled'], true)) {
             return response()->json([
-                'message' => 'Booking sedang dikerjakan/sudah selesai atau dibatalkan dan tidak bisa diubah.',
+                'message' => 'Booking is in progress, completed, or cancelled and cannot be modified.',
             ], 422);
         }
 
         if ($booking->payment_status === 'paid') {
             return response()->json([
-                'message' => 'Booking yang sudah dibayar tidak bisa diubah.',
+                'message' => 'Paid bookings cannot be modified.',
             ], 422);
         }
 
@@ -172,7 +172,7 @@ class BookingController extends Controller
 
         if (!$this->isWithinBusinessHours($scheduledAt)) {
             return response()->json([
-                'message' => 'Booking di luar jam operasional. Barbershop buka 07:00-21:00.',
+                'message' => 'Booking is outside operating hours. The shop is open 07:00-21:00.',
             ], 422);
         }
 
@@ -205,12 +205,12 @@ class BookingController extends Controller
 
             if (!$appliedCoupon) {
                 return response()->json([
-                    'message' => 'Kupon tidak valid atau sudah kadaluarsa.',
+                    'message' => 'Coupon is invalid or expired.',
                 ], 422);
             }
 
             $couponId = $appliedCoupon->id;
-            $price = $price * (100 - $appliedCoupon->discount_percent) / 100;
+            $price    = $price * (100 - $appliedCoupon->discount_percent) / 100;
         }
 
         $booking->fill([
@@ -238,7 +238,7 @@ class BookingController extends Controller
 
     /**
      * DELETE /api/bookings/{booking}
-     * Customer membatalkan booking (soft delete).
+     * Customer cancels a booking (soft delete).
      */
     public function destroy(Request $request, Booking $booking)
     {
@@ -250,13 +250,13 @@ class BookingController extends Controller
 
         if (in_array($booking->status, ['in_progress', 'done', 'cancelled'], true)) {
             return response()->json([
-                'message' => 'Booking sedang dikerjakan/sudah selesai dan tidak bisa dibatalkan.',
+                'message' => 'Booking is in progress or completed and cannot be cancelled.',
             ], 422);
         }
 
         if ($booking->payment_status === 'paid') {
             return response()->json([
-                'message' => 'Booking yang sudah dibayar tidak bisa dibatalkan.',
+                'message' => 'Paid bookings cannot be cancelled.',
             ], 422);
         }
 
@@ -276,32 +276,32 @@ class BookingController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Booking dibatalkan.',
+            'message' => 'Booking cancelled.',
             'booking' => $booking,
         ]);
     }
 
     /**
      * PATCH /api/bookings/{booking}/status
-     * Update status booking (waiting -> ongoing -> completed/cancelled).
+     * Update booking status (waiting -> ongoing -> completed/cancelled).
      * Role: admin/barber.
      */
     public function updateStatus(Request $request, Booking $booking)
     {
         $user = $request->user();
 
-        // Normalisasi status supaya konsisten dengan enum di DB (waiting, in_progress, done, cancelled)
+        // Normalize status to match DB enum (waiting, in_progress, done, cancelled)
         $rawStatus = $request->input('status');
         $normalizedMap = [
             'ongoing'   => 'in_progress',
             'completed' => 'done',
         ];
 
-        $status = $normalizedMap[$rawStatus] ?? $rawStatus;
+        $status  = $normalizedMap[$rawStatus] ?? $rawStatus;
         $allowed = ['waiting', 'in_progress', 'done', 'cancelled'];
 
         if (!in_array($status, $allowed, true)) {
-            return response()->json(['message' => 'Status tidak valid'], 422);
+            return response()->json(['message' => 'Invalid status'], 422);
         }
 
         if (!in_array($user->role, ['admin', 'barber'])) {
@@ -310,22 +310,22 @@ class BookingController extends Controller
 
         $booking->status = $status;
 
-        // Kalau baru selesai (completed pertama kali)
+        // When just finished (first time completed)
         if ($status === 'done' && !$booking->finished_at) {
             $booking->finished_at = now();
 
-            // Tambah loyalty customer
+            // Increment customer loyalty
             $customer = $booking->customer;
             if ($customer) {
                 $customer->increment('loyalty_count');
 
-                // Setiap kelipatan 7 => kupon loyalty 25%
+                // Every 7th visit -> 25% loyalty coupon
                 if ($customer->loyalty_count % 7 === 0) {
                     $this->issueLoyaltyCoupon($customer->id);
                 }
             }
 
-            // Update statistik barber
+            // Update barber statistics
             $barber = $booking->barber;
             if ($barber) {
                 $barber->increment('total_completed_orders');
@@ -338,12 +338,12 @@ class BookingController extends Controller
         return response()->json($booking);
     }
 
-    // ===== Helper internal =====
+    // ===== Internal helpers =====
 
     /**
-     * Hitung harga booking berdasarkan service + base price barber.
-     * Harga service tetap jadi dasar, barber menambah start price,
-     * dan skill level hanya menaikkan porsi harga service (bukan base barber).
+     * Calculate booking price based on service + barber base price.
+     * Service price is the base, barber adds starting price,
+     * and skill level only increases the service portion (not the barber base).
      */
     protected function calculateBasePrice(Service $service, Barber $barber, string $bookingDate): float
     {
@@ -381,14 +381,14 @@ class BookingController extends Controller
     protected function nextQueueNumber(Carbon $datetime): int
     {
         $bookingDate = $datetime->toDateString();
-        $lastQueue = Booking::whereDate('booking_date', $bookingDate)->max('queue_number');
+        $lastQueue   = Booking::whereDate('booking_date', $bookingDate)->max('queue_number');
 
         return $lastQueue ? $lastQueue + 1 : 1;
     }
 
     protected function applyPromo(float $price, string $bookingDate, int $serviceId): float
     {
-        $date = Carbon::parse($bookingDate);
+        $date      = Carbon::parse($bookingDate);
         $dayOfWeek = $date->dayOfWeek;
 
         $promo = Promo::where('is_active', true)

@@ -124,10 +124,10 @@ const ActiveTicket = ({ item }) => (
                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Guest Client</span>
                </div>
                <h3 className="font-serif text-2xl font-bold text-stone-200 tracking-wide group-hover:text-amber-100 transition-colors">
-                  {item.customer?.name || "Anonymous"}
+                  {item.customer.name || "Anonymous"}
                </h3>
                <div className="mt-1 text-xs font-medium text-stone-400">
-                  {item.service?.name || "Premium Cut"}
+                  {item.service.name || "Premium Cut"}
                </div>
             </div>
             
@@ -135,7 +135,7 @@ const ActiveTicket = ({ item }) => (
             <div className="text-right hidden sm:block">
                <div className="text-[10px] font-bold uppercase tracking-widest text-stone-500 mb-1">Stylist</div>
                <div className="flex items-center justify-end gap-2 text-stone-300">
-                  <span className="text-sm font-medium">{item.barber?.display_name || "Staff"}</span>
+                  <span className="text-sm font-medium">{item.barber.display_name || "Staff"}</span>
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-stone-800 border border-stone-700">
                     <ScissorIcon className="h-3 w-3 text-stone-400" />
                   </div>
@@ -146,7 +146,7 @@ const ActiveTicket = ({ item }) => (
          {/* Mobile Barber Info */}
          <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3 sm:hidden">
             <div className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Stylist</div>
-            <div className="text-xs font-medium text-stone-300">{item.barber?.display_name || "Staff"}</div>
+            <div className="text-xs font-medium text-stone-300">{item.barber.display_name || "Staff"}</div>
          </div>
       </div>
 
@@ -201,7 +201,7 @@ export default function QueueList({ items, autoFetch = false, intervalMs = 4000 
            <h2 className="font-serif text-sm font-bold uppercase tracking-widest text-stone-400">Currently Serving</h2>
         </div>
         
-        {activeSessions.length > 0 ? (
+        {activeSessions.length > 0  (
           <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
              {activeSessions.map(session => (
                <ActiveTicket key={session.id} item={session} />
@@ -238,15 +238,15 @@ export default function QueueList({ items, autoFetch = false, intervalMs = 4000 
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-800/40">
-                {listQueue.length > 0 ? (
+                {listQueue.length > 0  (
                   listQueue.map((item, idx) => {
                      // Check if this is the VERY NEXT person waiting
                      const isNext = idx === 0 && !item.status.toLowerCase().includes('done') && !item.status.toLowerCase().includes('cancel'); 
                      
                      return (
-                      <tr key={item.id} className={`group transition-colors hover:bg-stone-800/20 ${isNext ? 'bg-amber-950/10' : ''}`}>
+                      <tr key={item.id} className={`group transition-colors hover:bg-stone-800/20 ${isNext  'bg-amber-950/10' : ''}`}>
                         <td className="px-6 py-4">
-                          <span className={`font-mono text-sm font-bold ${isNext ? 'text-amber-500' : 'text-stone-400'}`}>
+                          <span className={`font-mono text-sm font-bold ${isNext  'text-amber-500' : 'text-stone-400'}`}>
                             #{item.queue_number}
                           </span>
                           {isNext && (
@@ -259,17 +259,17 @@ export default function QueueList({ items, autoFetch = false, intervalMs = 4000 
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             {/* Avatar Placeholder */}
-                            <div className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${isNext ? 'border-amber-900/40 bg-amber-950/20 text-amber-500' : 'border-stone-800 bg-stone-900 text-stone-600'}`}>
-                              <span className="font-serif font-bold">{item.customer?.name?.charAt(0) || "G"}</span>
+                            <div className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${isNext  'border-amber-900/40 bg-amber-950/20 text-amber-500' : 'border-stone-800 bg-stone-900 text-stone-600'}`}>
+                              <span className="font-serif font-bold">{item.customer.name.charAt(0) || "G"}</span>
                             </div>
                             <div>
-                              <div className={`font-medium ${isNext ? 'text-stone-200' : 'text-stone-400'}`}>{item.customer?.name}</div>
-                              <div className="text-[10px] text-stone-600">{item.service?.name}</div>
+                              <div className={`font-medium ${isNext  'text-stone-200' : 'text-stone-400'}`}>{item.customer.name}</div>
+                              <div className="text-[10px] text-stone-600">{item.service.name}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-stone-500 font-mono text-[11px]">
-                          {item.barber?.display_name || <span className="text-stone-700 italic">Unassigned</span>}
+                          {item.barber.display_name || <span className="text-stone-700 italic">Unassigned</span>}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <StatusBadge status={item.status} />

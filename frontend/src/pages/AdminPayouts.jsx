@@ -1,7 +1,7 @@
-// src/pages/admin/AdminPayouts.jsx (atau src/pages/AdminPayouts.jsx, sesuaikan path-mu)
+// src/pages/AdminPayouts.jsx (adjust the path if your structure differs)
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import adminPayoutApi from "../api/adminPayoutApi";
-import { getBarbers } from "../api/adminUserApi"; // ⬅️ ambil list barber
+import { getBarbers } from "../api/adminUserApi"; //  ambil list barber
 import { Canvas, useFrame } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
@@ -126,11 +126,11 @@ function LuxuryPole3D() {
       groupRef.current.position.y = Math.sin(t * 1.1) * 0.1;
     }
 
-    if (poleRef.current?.material?.map) {
+    if (poleRef.current.material.map) {
       poleRef.current.material.map.offset.y -= delta * 0.25;
     }
 
-    if (glassRef.current?.material) {
+    if (glassRef.current.material) {
       const mat = glassRef.current.material;
       mat.opacity = 0.32 + Math.sin(t * 2.2) * 0.06;
       mat.emissive = new THREE.Color("#fefce8");
@@ -268,7 +268,7 @@ export default function AdminPayouts() {
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [barbers, setBarbers] = useState([]); // ⬅️ list barber untuk dropdown
+  const [barbers, setBarbers] = useState([]); //  list barber untuk dropdown
 
   const [form, setForm] = useState({
     barber_id: "",
@@ -301,7 +301,7 @@ export default function AdminPayouts() {
       const res = await getBarbers();
       setBarbers(res.data || res || []);
     } catch (err) {
-      console.error("Gagal memuat barbers untuk payout:", err);
+      console.error("Failed to load barbers for payout:", err);
     }
   };
 
@@ -316,34 +316,34 @@ export default function AdminPayouts() {
     setForm((prev) => {
       let v = value;
 
-      // Amount: hanya angka 0-9, tanpa titik/koma
+      // Amount: digits only (0-9), no dots/commas
       if (name === "amount") {
         v = value.replace(/[^0-9]/g, "");
         return { ...prev, [name]: v };
       }
 
-      // A.N. Rekening: hanya alfabet + spasi, max 60
+      // Account name: letters + spaces only, max 60
       if (name === "account_name") {
         v = value.replace(/[^a-zA-Z\s]/g, "");
         if (v.length > 60) v = v.slice(0, 60);
         return { ...prev, [name]: v };
       }
 
-      // No Rek / HP: hanya angka, max 22
+      // Account number / phone: digits only, max 22
       if (name === "account_number") {
         v = value.replace(/[^0-9]/g, "");
         if (v.length > 22) v = v.slice(0, 22);
         return { ...prev, [name]: v };
       }
 
-      // Bank / Provider: hanya alfabet + spasi, max 30
+      // Bank / Provider: letters + spaces only, max 30
       if (name === "bank_name") {
         v = value.replace(/[^a-zA-Z\s]/g, "");
         if (v.length > 30) v = v.slice(0, 30);
         return { ...prev, [name]: v };
       }
 
-      // Catatan transaksi: max 255 karakter (karakter bebas)
+      // Transaction note: max 255 characters (free text)
       if (name === "note") {
         if (v.length > 255) v = v.slice(0, 255);
         return { ...prev, [name]: v };
@@ -360,13 +360,13 @@ export default function AdminPayouts() {
 
     // Validasi minimum sebelum kirim ke API
     if (!form.barber_id) {
-      setErrorMsg("Silakan pilih barber terlebih dahulu.");
+      setErrorMsg("Silakan Select Barber terlebih dahulu.");
       return;
     }
 
     const amountValue = Number(form.amount || 0);
     if (Number.isNaN(amountValue) || amountValue < 0) {
-      setErrorMsg("Amount minimal 0 dan hanya boleh berisi angka.");
+      setErrorMsg("Amount must be at least 0 and digits only.");
       return;
     }
 
@@ -395,7 +395,7 @@ export default function AdminPayouts() {
     } catch (err) {
       console.error(err);
       const msg =
-        err?.response?.data?.message || "Gagal membuat payout simulasi.";
+        err.response.data.message || "Failed to create payout simulation.";
       setErrorMsg(msg);
     }
   };
@@ -406,28 +406,28 @@ export default function AdminPayouts() {
       loadPayouts();
     } catch (err) {
       console.error(err);
-      alert("Gagal mengubah status payout.");
+      alert("Failed to change payout status.");
     }
   };
 
-  // === HAPUS PAYOUT ===
+// === DELETE PAYOUT ===
   const handleDelete = async (id) => {
-    if (!window.confirm("Yakin ingin menghapus payout ini dari riwayat?")) {
+    if (!window.confirm("Are you sure you want to delete this payout from history")) {
       return;
     }
     try {
       // SESUAIKAN nama fungsi ini dengan API-mu kalau berbeda:
-      await adminPayoutApi.delete(id); // misal: adminPayoutApi.destroy(id)
+      await adminPayoutApi.delete(id); // e.g., adminPayoutApi.destroy(id)
       loadPayouts();
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus payout.");
+      alert("Failed to delete payout.");
     }
   };
 
   return (
     <>
-      {/* CSS kecil yang khusus dibutuhkan panel payout (gradien teks, scrollbar lokal) */}
+      {/* Extra CSS needed for payout panel (text gradient, local scrollbar) */}
       <style>{`
         .text-gold-gradient {
           background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
@@ -466,7 +466,7 @@ export default function AdminPayouts() {
       `}</style>
 
       <section className="space-y-4 text-xs">
-        {/* Header payout — matching gaya section lain di Dashboard */}
+        {/* Payout header aligned with other dashboard sections */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="font-tech text-[10px] text-amber-500/90 uppercase tracking-[0.25em]">
@@ -482,14 +482,14 @@ export default function AdminPayouts() {
           </div>
         </div>
 
-        {/* Kartu utama payout, selaras dengan style kartu lain di Dashboard */}
+        {/* Main payout card, aligned with other dashboard cards */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="relative rounded-xl border border-amber-900/60 bg-[#16100c]/95 backdrop-blur-xl p-4 sm:p-5 lg:p-6 shadow-[0_24px_60px_rgba(0,0,0,0.95)] overflow-hidden card-lux"
         >
-          {/* Atmosfer internal kartu, mengikuti style dashboard */}
+          {/* Internal card atmosphere matching the dashboard style */}
           <div className="pointer-events-none absolute inset-0">
             <AmbientGlow />
             <ScannerBeam />
@@ -514,15 +514,15 @@ export default function AdminPayouts() {
                   </span>
                 </div>
                 <div className="mt-3 text-[11px] text-amber-100/75 font-modern leading-relaxed">
-                  Data di panel ini hanya digunakan sebagai{" "}
+                  Data in this panel is for{" "}
                   <span className="text-soft-gold font-semibold">
                     simulasi alur withdraw
                   </span>{" "}
                   (approve, paid, rejected) dan{" "}
                   <span className="text-soft-gold font-semibold">
-                    histori payout
+                    payout history
                   </span>{" "}
-                  untuk barber.
+                  for barbers.
                 </div>
               </div>
 
@@ -537,7 +537,7 @@ export default function AdminPayouts() {
                     Barber Payouts
                   </div>
                   <div className="font-tech text-[10px] text-amber-100/70 tracking-[0.22em] uppercase">
-                    Create • Simulate • Review
+                    Create - Simulate - Review
                   </div>
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function AdminPayouts() {
                         disabled
                         className="bg-[#0b0705] text-slate-400"
                       >
-                        Pilih Barber
+                        Select Barber
                       </option>
                       {barbers.map((b) => (
                         <option
@@ -662,7 +662,7 @@ export default function AdminPayouts() {
                       value={form.account_name}
                       onChange={handleChange}
                       className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none"
-                      placeholder="Nama pemilik rekening"
+                      placeholder="Account holder name"
                     />
                   </div>
 
@@ -692,15 +692,15 @@ export default function AdminPayouts() {
                       value={form.bank_name}
                       onChange={handleChange}
                       className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none"
-                      placeholder="Contoh: BCA / DANA"
+                      placeholder="Example: BCA / DANA"
                     />
                   </div>
                 </div>
 
-                {/* Catatan Transaksi */}
+                {/* Transaction Note */}
                 <div>
                   <label className="block text-[11px] text-amber-100/80 font-tech uppercase tracking-[0.18em]">
-                    CATATAN TRANSAKSI
+                    TRANSACTION NOTE
                   </label>
                   <input
                     type="text"
@@ -708,7 +708,7 @@ export default function AdminPayouts() {
                     value={form.note}
                     onChange={handleChange}
                     className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none placeholder:text-amber-900/60"
-                    placeholder="Contoh: Payout minggu ke-2 November"
+                    placeholder="Example: Payout week 2 November"
                   />
                 </div>
 
@@ -716,7 +716,7 @@ export default function AdminPayouts() {
                   type="submit"
                   className="mt-1 inline-flex items-center justify-center rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#2b190b] hover:bg-amber-300 tracking-[0.25em] uppercase shadow-[0_0_20px_rgba(251,191,36,0.55)]"
                 >
-                  SIMPAN PAYOUT
+                  SAVE PAYOUT
                 </button>
               </form>
 
@@ -727,7 +727,7 @@ export default function AdminPayouts() {
                     History
                   </span>
                   <span className="text-[10px] font-tech text-amber-100/60 tracking-[0.18em] uppercase">
-                    {meta?.total ? `Total: ${meta.total}` : "No Data"}
+                    {(meta && meta.total) ? `Total: ${meta.total}` : "No Data"}
                   </span>
                 </div>
 
@@ -738,7 +738,7 @@ export default function AdminPayouts() {
                     </div>
                   ) : payouts.length === 0 ? (
                     <div className="p-4 text-center text-[11px] text-amber-100/75 font-modern">
-                      Belum ada data payout.
+                      No payout data yet.
                     </div>
                   ) : (
                     <div className="overflow-x-auto custom-scrollbar">
@@ -775,12 +775,10 @@ export default function AdminPayouts() {
                                 #{p.id}
                               </td>
                               <td className="py-2 px-3 text-soft-gold">
-                                {p.barber?.display_name ||
-                                  p.barber?.name ||
-                                  `ID ${p.barber_id}`}
+                                {p.barber?.display_name || p.barber?.name || (p.barber_id ? `ID ${p.barber_id}` : "Unknown barber")}
                               </td>
                               <td className="py-2 px-3 text-right text-emerald-300 font-tech">
-                                {Number(p.amount).toLocaleString("id-ID")}
+                                {Number(p.amount || 0).toLocaleString("id-ID")}
                               </td>
                               <td className="py-2 px-3 text-amber-100/80">
                                 {p.channel}
@@ -827,7 +825,7 @@ export default function AdminPayouts() {
                                   <button
                                     onClick={() => handleDelete(p.id)}
                                     className="text-[10px] rounded-full border border-red-500/80 bg-red-900/40 hover:bg-red-800/70 px-2.5 py-0.5 text-red-100 font-tech tracking-[0.18em]"
-                                    title="Hapus payout ini"
+                                    title="Delete this payout"
                                   >
                                     DEL
                                   </button>

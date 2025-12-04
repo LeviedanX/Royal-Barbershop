@@ -86,9 +86,9 @@ export default function Sidebar({ items = [] }) {
                 "transition-all duration-300 ease-out",
                 "border border-transparent", // Placeholder border
                 isActive
-                  ? "bg-gradient-to-r from-amber-900/20 to-transparent border-l-amber-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                   "bg-gradient-to-r from-amber-900/20 to-transparent border-l-amber-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                   : "hover:bg-white/[0.03] hover:text-amber-100 text-stone-400",
-                isActive ? "text-amber-400" : "",
+                isActive  "text-amber-400" : "",
               ].join(" ")
             }
           >
@@ -104,7 +104,7 @@ export default function Sidebar({ items = [] }) {
                   <span
                     className={`
                       relative flex h-6 w-6 items-center justify-center rounded transition-all duration-300
-                      ${isActive ? "text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" : "text-stone-500 group-hover:text-amber-200"}
+                      ${isActive  "text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" : "text-stone-500 group-hover:text-amber-200"}
                     `}
                   >
                     {item.icon}
@@ -115,7 +115,7 @@ export default function Sidebar({ items = [] }) {
                 <span
                   className={`
                     sb-font-sans text-sm font-medium tracking-wide transition-all duration-300
-                    ${isActive ? "translate-x-1 font-semibold" : "group-hover:translate-x-1"}
+                    ${isActive  "translate-x-1 font-semibold" : "group-hover:translate-x-1"}
                   `}
                 >
                   {item.label}
@@ -149,14 +149,14 @@ export default function Sidebar({ items = [] }) {
             </div>
         </div>
         <div className="mt-2 text-center text-[10px] text-stone-600 sb-font-serif italic">
-             Est. 2025 • Classic Cuts
+             Est. 2025  Classic Cuts
         </div>
       </div>
 
       {/* --- STYLE INJECTION --- */}
       <style>{`
         /* Import Fonts if not globally available */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..800&family=JetBrains+Mono:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..800&family=JetBrains+Mono:wght@400&display=swap');
 
         .sb-scope {
             /* Palette Override */

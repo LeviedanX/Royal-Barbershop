@@ -45,11 +45,14 @@ export default function PaymentButton({
   className = "",
 }) {
   const [loading, setLoading] = useState(false);
-  const [snapReady, setSnapReady] = useState(!!window.snap);
-  const bookingId = booking?.id ?? bookingIdProp;
+  const [snapReady, setSnapReady] = useState(
+    typeof window !== "undefined" ? !!window.snap : false
+  );
+  const bookingId = booking?.id || bookingIdProp;
 
   // --- LOGIC ---
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (window.snap) {
       setSnapReady(true);
       return;
@@ -76,20 +79,20 @@ export default function PaymentButton({
 
   const handlePay = async () => {
     if (!bookingId) {
-      alert("Booking belum tersedia.");
+      alert("Booking is not available yet.");
       return;
     }
     if (!snapReady) {
-      alert("Sistem pembayaran sedang memuat...");
+      alert("Payment system is loading...");
       return;
     }
 
     setLoading(true);
     try {
       const { data } = await http.post(`/payments/${bookingId}/create`);
-      const token = data.snap_token || data.payment?.snap_token;
+      const token = data.snap_token || data.payment.snap_token;
 
-      if (!token) throw new Error("Token tidak ditemukan");
+      if (!token) throw new Error("Snap token not found");
 
       window.snap.pay(token, {
         onSuccess: async (result) => {
@@ -111,7 +114,7 @@ export default function PaymentButton({
       });
     } catch (err) {
       console.error("Payment Error:", err);
-      alert("Gagal menginisialisasi pembayaran.");
+      alert("Failed to initialize payment.");
     } finally {
       setLoading(false);
     }
@@ -183,7 +186,7 @@ export default function PaymentButton({
               ${loading ? "text-amber-500" : "text-neutral-200 group-hover:text-white"}
             `}
             >
-              {loading ? "Menghubungkan..." : "Bayar Sekarang"}
+              {loading ? "Connecting..." : "Pay Now"}
             </span>
           </div>
         </div>

@@ -12,8 +12,7 @@ class AuthController extends Controller
 {
     /**
      * POST /api/register
-     * Opsional: register user baru (default role = customer).
-     * Kalau di UAS kamu mau data user di-seed saja, endpoint ini bisa jarang dipakai.
+     * Optional: register a new user (default role = customer).
      */
     public function register(Request $request)
     {
@@ -44,7 +43,7 @@ class AuthController extends Controller
 
     /**
      * POST /api/login
-     * Login dengan email + password, return token Sanctum.
+     * Login with email + password, return Sanctum token.
      */
     public function login(Request $request)
     {
@@ -57,16 +56,16 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Email atau password salah.'],
+                'email' => ['Email or password is incorrect.'],
             ]);
         }
 
-        // (Opsional) hapus token lama kalau mau single device:
+        // (Optional) delete old tokens if you want single-device auth:
         // $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Catat login agar audit trail terisi untuk semua role
+        // Log the login to keep an audit trail for all roles
         try {
             AccessLog::create([
                 'user_id'    => $user->id,
@@ -76,7 +75,7 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
         } catch (\Throwable $e) {
-            // jangan biarkan logging menggagalkan login
+            // Do not let logging failures block login
         }
 
         return response()->json([
@@ -87,7 +86,7 @@ class AuthController extends Controller
 
     /**
      * GET /api/me
-     * Data user yang sedang login.
+     * Current authenticated user data.
      */
     public function me(Request $request)
     {
@@ -96,7 +95,7 @@ class AuthController extends Controller
 
     /**
      * POST /api/logout
-     * Logout token yang sedang dipakai (SPA/React).
+     * Logout the current token (SPA/React).
      */
     public function logout(Request $request)
     {

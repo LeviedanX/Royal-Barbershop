@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import { useAuth } from "../hooks/useAuth";
 
-// --- VISUAL ASSETS (SAMA UNIVERSE DENGAN LOGIN) ---
+// --- VISUAL ASSETS (SHARED WITH LOGIN) ---
 
 // 1. Slow Rising Gold Dust
 const FloatingParticles = () => {
@@ -63,7 +63,7 @@ const ScanlineOverlay = () => (
   <div className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-soft-light bg-[repeating-linear-gradient(to_bottom,rgba(255,255,255,0.12)_0px,rgba(255,255,255,0.12)_1px,transparent_1px,transparent_3px)]" />
 );
 
-// --- 3D BARBERSHOP POLE (SAMA DENGAN LOGIN) ---
+// --- 3D BARBERSHOP POLE (SAME AS LOGIN) ---
 
 function useBarberPoleTexture() {
   return useMemo(() => {
@@ -114,11 +114,11 @@ function LuxuryPole3D() {
       groupRef.current.position.y = Math.sin(t * 1.1) * 0.12;
     }
 
-    if (poleRef.current?.material?.map) {
+    if (poleRef.current.material.map) {
       poleRef.current.material.map.offset.y -= delta * 0.25;
     }
 
-    if (glassRef.current?.material) {
+    if (glassRef.current.material) {
       const mat = glassRef.current.material;
       mat.opacity = 0.34 + Math.sin(t * 2.2) * 0.08;
       mat.emissive = new THREE.Color("#fefce8");
@@ -299,7 +299,7 @@ export default function RegisterPage() {
     [form.password]
   );
 
-  // style indikator strength (visual, selaras theme)
+  // strength indicator styles (visual, theme-aligned)
   const strengthStyles = {
     low: {
       bar: "bg-red-500/80 shadow-[0_0_8px_rgba(248,113,113,0.7)]",
@@ -326,7 +326,7 @@ export default function RegisterPage() {
     setError("");
     const { name, value } = e.target;
 
-    // Nama Lengkap: hanya alfabet + spasi, max 60 karakter
+    // Full name: letters and spaces only, max 60 characters
     if (name === "name") {
       let sanitized = value.replace(/[^A-Za-z\s]/g, "");
       if (sanitized.length > 60) sanitized = sanitized.slice(0, 60);
@@ -334,8 +334,8 @@ export default function RegisterPage() {
       return;
     }
 
-    // Email: selalu lowercase, hapus spasi, max 60 karakter
-    // Domain @barber.com diwajibkan lewat validasi di handleSubmit (bukan auto-append)
+    // Email: always lowercase, strip spaces, max 60 characters
+    // Domain @barber.com domain enforced via handleSubmit validation (not auto-appended)
     if (name === "email") {
       let normalized = value.toLowerCase().replace(/\s/g, "");
       if (normalized.length > 60) normalized = normalized.slice(0, 60);
@@ -343,7 +343,7 @@ export default function RegisterPage() {
       return;
     }
 
-    // No. HP: hanya angka, max 30 digit
+    // Phone: digits only, max 30 digits
     if (name === "phone") {
       let digitsOnly = value.replace(/\D/g, "");
       if (digitsOnly.length > 30) {
@@ -353,13 +353,13 @@ export default function RegisterPage() {
       return;
     }
 
-    // Password dan konfirmasi: bebas, nanti dicek minimal 8 karakter di handleSubmit
+    // Password and confirmation: freeform; handleSubmit enforces min 8 characters
     if (name === "password" || name === "password_confirmation") {
       setForm((prev) => ({ ...prev, [name]: value }));
       return;
     }
 
-    // default (jaga-jaga kalau ada field lain)
+    // default handler (in case other fields are added)
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -367,16 +367,16 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    // Validasi front-end sesuai requirement
+    // Frontend validation per requirements
 
-    // Nama: hanya huruf + spasi, max 60 char
+    // Name: letters and spaces only, max 60 characters
     if (
       !form.name ||
       form.name.length > 60 ||
       !/^[A-Za-z\s]+$/.test(form.name)
     ) {
       setError(
-        "Nama lengkap hanya boleh berisi huruf dan spasi, dengan maksimal 60 karakter."
+        "Full name must use letters and spaces only, maximum 60 characters."
       );
       return;
     }
@@ -385,20 +385,20 @@ export default function RegisterPage() {
     const emailRegex = /^[a-z0-9._%+-]+@barber\.com$/;
     if (!emailRegex.test(form.email) || form.email.length > 60) {
       setError(
-        "Email wajib huruf kecil, menggunakan domain @barber.com, dan maksimal 60 karakter."
+        "Email must be lowercase, use the @barber.com domain, and be at most 60 characters."
       );
       return;
     }
 
-    // Phone: optional, tapi kalau diisi hanya angka dan max 30 digit
+    // Phone: optional, but if provided digits only, max 30 digits
     if (form.phone && !/^\d{1,30}$/.test(form.phone)) {
-      setError("No. HP hanya boleh berisi angka dengan maksimal 30 digit.");
+      setError("Phone number must contain digits only, up to 30 digits.");
       return;
     }
 
-    // Password: minimal 8 karakter
+  // Password: minimum 8 characters
     if (!form.password || form.password.length < 8) {
-      setError("Password minimal 8 karakter.");
+      setError("Password must be at least 8 characters.");
       return;
     }
 
@@ -409,8 +409,8 @@ export default function RegisterPage() {
     } catch (err) {
       console.error(err);
       const msg =
-        err?.response?.data?.message ||
-        "Registrasi gagal. Periksa kembali data yang diisi.";
+        err.response.data.message ||
+        "Registration failed. Please review your details.";
       setError(msg);
     } finally {
       setLocalLoading(false);
@@ -419,9 +419,9 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-8 sm:px-6 overflow-hidden bg-[#020202] selection:bg-[#bf953f] selection:text-black">
-      {/* FONT & LUXURY CSS (SAMA DENGAN LOGIN) */}
+      {/* FONT & LUXURY CSS (SHARED WITH LOGIN) */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
         
         .font-royal { font-family: 'Cinzel', serif; }
         .font-vintage { font-family: 'Italiana', serif; }
@@ -521,9 +521,7 @@ export default function RegisterPage() {
 
                 {/* isi paragraf utama */}
                 <span className="block text-slate-300/90">
-                  Dengan mendaftar sebagai customer, Anda dapat melakukan pemesanan barber
-                  favorit, memantau promo harian, serta mengumpulkan kupon loyalti yang
-                  terakumulasi otomatis setiap 7 kali kunjungan.
+                  As a registered customer, you can book your favorite barbers, monitor daily promos, and collect loyalty coupons that accumulate automatically every 7 visits.
                 </span>
               </p>
             </div>
@@ -579,7 +577,7 @@ export default function RegisterPage() {
                 {/* Nama */}
                 <div className="group relative">
                   <label className="block mb-1.5 text-[10px] font-tech uppercase tracking-[0.24em] text-slate-500 group-focus-within:text-[#bf953f] transition-colors">
-                    Nama Lengkap
+                    Full Name
                   </label>
                   <input
                     type="text"
@@ -587,6 +585,7 @@ export default function RegisterPage() {
                     className="w-full bg-transparent border-b border-white/10 py-2.5 text-sm text-slate-100 outline-none focus:border-[#bf953f] font-modern tracking-wide transition-all duration-300"
                     value={form.name}
                     onChange={handleChange}
+                    placeholder="e.g., John Carter"
                     required
                   />
                   <div className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-[#bf953f] transition-all duration-500 ease-out group-hover:w-full group-focus-within:w-full -translate-x-1/2 shadow-[0_0_12px_#bf953f]" />
@@ -603,6 +602,7 @@ export default function RegisterPage() {
                     className="w-full bg-transparent border-b border-white/10 py-2.5 text-sm text-slate-100 outline-none focus:border-[#bf953f] font-modern tracking-wide transition-all duration-300"
                     value={form.email}
                     onChange={handleChange}
+                    placeholder="example@barber.com"
                     required
                   />
                   <div className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-[#bf953f] transition-all duration-500 ease-out group-hover:w-full group-focus-within:w-full -translate-x-1/2 shadow-[0_0_12px_#bf953f]" />
@@ -611,7 +611,7 @@ export default function RegisterPage() {
                 {/* Phone */}
                 <div className="group relative">
                   <label className="block mb-1.5 text-[10px] font-tech uppercase tracking-[0.24em] text-slate-500 group-focus-within:text-[#bf953f] transition-colors">
-                    No. HP
+                    Phone Number
                   </label>
                   <input
                     type="text"
@@ -619,7 +619,7 @@ export default function RegisterPage() {
                     className="w-full bg-transparent border-b border-white/10 py-2.5 text-sm text-slate-100 outline-none focus:border-[#bf953f] font-modern tracking-wide transition-all duration-300 placeholder:text-slate-600"
                     value={form.phone}
                     onChange={handleChange}
-                    placeholder="Opsional, memudahkan admin menghubungi kamu"
+                    placeholder="Optional: e.g., 628123456789 (helps us contact you)"
                   />
                   <div className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-[#bf953f] transition-all duration-500 ease-out group-hover:w-full group-focus-within:w-full -translate-x-1/2 shadow-[0_0_12px_#bf953f]" />
                 </div>
@@ -646,12 +646,13 @@ export default function RegisterPage() {
                       className="w-full bg-transparent border-b border-white/10 py-2.5 text-sm text-slate-100 outline-none focus:border-[#bf953f] font-modern tracking-wide transition-all duration-300"
                       value={form.password}
                       onChange={handleChange}
+                      placeholder="Min. 8 characters, e.g., RoyalCuts!23"
                       required
                       // indikator non-visual (tooltip + data attribute)
                       data-strength={passwordStrength.level}
                       title={
                         passwordStrength.label
-                          ? `Keamanan password: ${passwordStrength.label}`
+                          ? `Password strength: ${passwordStrength.label}`
                           : undefined
                       }
                     />
@@ -661,7 +662,7 @@ export default function RegisterPage() {
                   {/* Confirm Password */}
                   <div className="group relative">
                     <label className="block mb-1.5 text-[10px] font-tech uppercase tracking-[0.24em] text-slate-500 group-focus-within:text-[#bf953f] transition-colors">
-                      Konfirmasi Password
+                      Confirm Password
                     </label>
                     <input
                       type="password"
@@ -669,6 +670,7 @@ export default function RegisterPage() {
                       className="w-full bg-transparent border-b border-white/10 py-2.5 text-sm text-slate-100 outline-none focus:border-[#bf953f] font-modern tracking-wide transition-all duration-300"
                       value={form.password_confirmation}
                       onChange={handleChange}
+                      placeholder="Re-enter your password"
                       required
                     />
                     <div className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-[#bf953f] transition-all duration-500 ease-out group-hover:w-full group-focus-within:w-full -translate-x-1/2 shadow-[0_0_12px_#bf953f]" />
@@ -690,7 +692,7 @@ export default function RegisterPage() {
                     {/* teks utama + ikon */}
                     <span className="relative inline-flex items-center gap-3">
                       <span className="font-tech text-[11px] font-bold tracking-[0.38em] uppercase text-gold-gradient group-hover:text-[#fcf6ba] transition-colors">
-                        {loading ? "Mendaftar..." : "Daftar sebagai Customer"}
+                        {loading ? "Registering..." : "Register as Customer"}
                       </span>
                     </span>
                   </div>
@@ -701,7 +703,7 @@ export default function RegisterPage() {
               {/* LINK KE LOGIN */}
               <div className="mt-7 text-center font-modern text-[11px] text-slate-400">
                 <span className="mb-2 block text-slate-500">
-                  Sudah punya akun?
+                  Already have an account
                 </span>
 
                 <Link
@@ -742,7 +744,7 @@ export default function RegisterPage() {
                       transition-colors
                     "
                   >
-                    Login di sini
+                    Login here
                   </span>
                 </Link>
               </div>

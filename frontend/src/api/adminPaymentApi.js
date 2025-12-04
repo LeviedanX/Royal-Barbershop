@@ -28,7 +28,7 @@ export const adminPaymentApi = {
     return data;
   },
 
-  // ==== Business hours (jam operasional) ====
+  // ==== Business hours ====
   async listBusinessHours() {
     const { data } = await http.get("/admin/business-hours");
     return data;
@@ -39,13 +39,13 @@ export const adminPaymentApi = {
     return data;
   },
 
-  // tutup toko sementara / buka lagi
+  // Temporarily close or reopen the shop
   async toggleShopClosed(closed = true) {
     const { data } = await http.post("/admin/close-shop", { closed });
     return data;
   },
 
-  // ==== Access log (siapa saja yang akses web) ====
+  // ==== Access log (who accessed the app) ====
   async listAccessLogs(params = {}) {
     const { data } = await http.get("/admin/access-logs", { params });
     return data;
@@ -53,7 +53,7 @@ export const adminPaymentApi = {
 };
 
 /**
- * === Named exports untuk DashboardAdmin.jsx (payments) ===
+ * === Named exports for DashboardAdmin.jsx (payments) ===
  */
 
 export async function getPayments(params = {}) {

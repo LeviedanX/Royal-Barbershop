@@ -19,31 +19,31 @@ class PaymentController extends Controller
 
     /**
      * POST /api/payments/{booking}/create
-     * Buat Snap token untuk pembayaran Midtrans.
+     * Create a Snap token for Midtrans payments.
      */
     public function createSnap(Request $request, Booking $booking)
     {
         $user = $request->user();
 
-        // Customer cuma boleh bayar booking miliknya
+        // Customers may only pay their own bookings
         if ($user->role === 'customer' && $booking->customer_id !== $user->id) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        // Validasi total_price
+        // Validate total_price
         if (!$booking->total_price || $booking->total_price <= 0) {
             return response()->json([
-                'message' => 'Total harga booking belum di-set atau 0.',
+                'message' => 'Booking total_price is not set or is zero.',
             ], 422);
         }
 
-        // order_id unik
+        // Unique order_id
         $orderId = 'BOOK-' . $booking->id . '-' . time();
 
         $params = [
             'transaction_details' => [
                 'order_id'     => $orderId,
-                'gross_amount' => (int) $booking->total_price, // Midtrans butuh integer
+                'gross_amount' => (int) $booking->total_price, // Midtrans requires integer
             ],
             'customer_details' => [
                 'first_name' => $user->name,
@@ -61,12 +61,12 @@ class PaymentController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Gagal membuat Snap token',
+                'message' => 'Failed to create Snap token.',
                 'error'   => $e->getMessage(),
             ], 500);
         }
 
-        // simpan payment baru
+        // Save new payment
         $payment = Payment::create([
             'booking_id'         => $booking->id,
             'midtrans_order_id'  => $orderId,
@@ -79,7 +79,7 @@ class PaymentController extends Controller
             'raw_response'       => null,
         ]);
 
-        // status pembayaran di booking jadi "pending"
+        // Update booking payment status to pending
         $booking->payment_status = 'pending';
         $booking->save();
 
@@ -91,14 +91,14 @@ class PaymentController extends Controller
 
     /**
      * POST /api/payments/{booking}/confirm
-     * Dipanggil dari frontend setelah Snap onSuccess/onPending.
-     * Akan pull status transaksi ke Midtrans via API.
+     * Called by the frontend after Snap onSuccess/onPending.
+     * Will pull the transaction status from Midtrans via API.
      */
     public function confirmStatus(Request $request, Booking $booking)
     {
         $user = $request->user();
 
-        // Pastikan customer hanya bisa mengkonfirmasi booking miliknya
+        // Customers can only confirm their own bookings
         if ($user->role === 'customer' && $booking->customer_id !== $user->id) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
@@ -109,7 +109,7 @@ class PaymentController extends Controller
 
         $orderId = $data['order_id'];
 
-        // pastikan payment sesuai booking & order_id
+        // Ensure payment matches booking and order_id
         $payment = Payment::where('midtrans_order_id', $orderId)
             ->where('booking_id', $booking->id)
             ->first();
@@ -127,7 +127,7 @@ class PaymentController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Gagal mengecek status transaksi',
+                'message' => 'Failed to check transaction status.',
                 'error'   => $e->getMessage(),
             ], 500);
         }
@@ -138,14 +138,13 @@ class PaymentController extends Controller
         $fraudStatus       = $status->fraud_status ?? null;
         $transactionTime   = $status->transaction_time ?? null;
 
-        // update payment seperti di callback()
+        // Update payment similar to callback()
         $payment->payment_type       = $paymentType;
         $payment->transaction_status = $transactionStatus;
         $payment->fraud_status       = $fraudStatus;
         $payment->gross_amount       = $grossAmount ?? $payment->gross_amount;
         $payment->transaction_time   = $transactionTime;
-        // konversi ke array supaya cocok dengan casts json->array
-        $payment->raw_response       = json_decode(json_encode($status), true);
+        $payment->raw_response       = json_decode(json_encode($status), true); // cast to array for json cast
         $payment->save();
 
         $bookingModel = $payment->booking;
@@ -173,8 +172,8 @@ class PaymentController extends Controller
 
     /**
      * POST /api/midtrans/callback
-     * Endpoint callback/notification dari Midtrans.
-     * (Route ini TIDAK pakai auth:sanctum.)
+     * Midtrans callback/notification endpoint.
+     * (This route does not use auth:sanctum.)
      */
     public function callback(Request $request)
     {

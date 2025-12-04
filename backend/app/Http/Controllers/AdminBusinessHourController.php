@@ -41,7 +41,7 @@ class AdminBusinessHourController extends Controller
     }
 
     /**
-     * Tutup toko sementara: set semua is_closed = true.
+     * Temporarily close the shop: set all days to closed.
      */
     public function closeShop(Request $request)
     {
@@ -51,11 +51,11 @@ class AdminBusinessHourController extends Controller
             'is_closed' => true,
         ]);
 
-        return response()->json(['message' => 'Toko ditutup sementara (semua hari closed)']);
+        return response()->json(['message' => 'Shop temporarily closed (all days set to closed).']);
     }
 
     /**
-     * Buka toko dengan jam default: 07:00 - 21:00, semua hari.
+     * Open the shop with the default hours: 07:00 - 21:00, all days.
      */
     public function openShopDefault(Request $request)
     {
@@ -67,6 +67,6 @@ class AdminBusinessHourController extends Controller
             'is_closed'  => false,
         ]);
 
-        return response()->json(['message' => 'Toko dibuka dengan jam default 07:00-21:00']);
+        return response()->json(['message' => 'Shop opened with default hours 07:00-21:00.']);
     }
 }

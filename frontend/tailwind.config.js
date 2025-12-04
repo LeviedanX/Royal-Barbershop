@@ -7,7 +7,7 @@ export default {
   darkMode: "class", 
   theme: {
     extend: {
-      // --- KONFIGURASI LAMA (TIDAK DIHAPUS) ---
+      // --- LEGACY CONFIG (KEPT) ---
       fontFamily: {
         sans: [
           "system-ui",
@@ -19,7 +19,7 @@ export default {
         ],
       },
       colors: {
-        // nuansa neon hijau & biru untuk barbershop futuristik
+        // Neon green and blue palette for a futuristic barbershop feel
         neon: {
           green: "#22c55e",
           blue: "#38bdf8",
@@ -30,14 +30,14 @@ export default {
           "0 0 30px rgba(34,197,94,0.18), 0 0 60px rgba(56,189,248,0.16)",
       },
 
-      // --- KONFIGURASI BARU (DITAMBAHKAN) ---
+      // --- NEW CONFIG (ADDED) ---
       keyframes: {
-        // Efek kilau cahaya (shimmer)
+        // Shimmer light effect
         shimmer: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
-        // Efek barber pole bergerak (slide-left)
+        // Animated barber pole stripes (slide-left)
         'slide-left': {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },

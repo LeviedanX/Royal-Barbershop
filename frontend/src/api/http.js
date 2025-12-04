@@ -6,7 +6,7 @@ const resolveBaseUrl = () => {
   if (envBase) return envBase.replace(/\/$/, "");
 
   // fallback: pakai origin host tempat frontend disajikan (berguna saat deploy di mesin berbeda)
-  if (typeof window !== "undefined" && window.location?.origin) {
+  if (typeof window !== "undefined" && window.location.origin) {
     return window.location.origin.replace(/\/$/, "");
   }
 

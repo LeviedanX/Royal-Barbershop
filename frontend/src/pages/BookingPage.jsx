@@ -128,11 +128,11 @@ function LuxuryPole3D() {
       groupRef.current.position.y = Math.sin(t * 1.1) * 0.12;
     }
 
-    if (poleRef.current?.material?.map) {
+    if (poleRef.current.material.map) {
       poleRef.current.material.map.offset.y -= delta * 0.25;
     }
 
-    if (glassRef.current?.material) {
+    if (glassRef.current.material) {
       const mat = glassRef.current.material;
       mat.opacity = 0.34 + Math.sin(t * 2.2) * 0.08;
       mat.emissive = new THREE.Color("#fefce8");
@@ -355,7 +355,7 @@ export default function BookingPage() {
       const payload = {
         barber_id: selectedBarber.id,
         service_id: selectedService.id,
-        hairstyle_id: selectedHairstyle?.id || null,
+        hairstyle_id: selectedHairstyle.id || null,
         scheduled_at,
         coupon_code: couponCode || null,
         note,
@@ -366,15 +366,15 @@ export default function BookingPage() {
     } catch (err) {
       console.error(err);
       const msg =
-        err?.response?.data?.message ||
-        "Gagal membuat booking. Pastikan waktu dalam jam buka (07:00–21:00).";
+        err.response.data.message ||
+        "Failed to create a booking. Ensure the time is within operating hours (07:00–21:00).";
       setErrorMsg(msg);
     } finally {
       setSubmitting(false);
     }
   };
 
-  // Ambil booking yang sudah dibuat (normalize bentuk respons)
+  // Normalize booking response
   const createdBooking = bookingResult?.booking ?? bookingResult;
   const createdBookingTotal = createdBooking
     ? Number(createdBooking.total_price ?? estimatedTotal ?? 0)
@@ -389,7 +389,7 @@ export default function BookingPage() {
         : null;
       if (found) setBookingResult(found);
     } catch (err) {
-      console.error("Gagal refresh status booking:", err);
+      console.error("Failed to refresh booking status:", err);
     }
   };
 
@@ -398,7 +398,7 @@ export default function BookingPage() {
       <div className="min-h-screen relative flex items-center justify-center px-4 py-8 sm:px-6 overflow-hidden bg-[#020202] selection:bg-[#bf953f] selection:text-black">
         {/* FONT & LUXURY CSS */}
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+          @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
           
           .font-royal { font-family: 'Cinzel', serif; }
           .font-vintage { font-family: 'Italiana', serif; }
@@ -496,8 +496,7 @@ export default function BookingPage() {
                   Queue & Schedule
                 </span>
                 <span className="block text-slate-300/90">
-                  Kelola barber favorit, layanan, jadwal, dan kupon diskon
-                  dalam satu layar.
+                  Manage favorite barbers, services, schedules, and promo codes in a single view.
                 </span>
               </p>
             </div>
@@ -564,13 +563,13 @@ export default function BookingPage() {
                         <span className="relative inline-flex flex-col gap-1">
                           <span className="inline-flex items-baseline gap-2">
                             <span className="bg-gradient-to-r from-slate-50 via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                              Pilih
+                              Select
                             </span>
                             <span className="text-gold-gradient drop-shadow-[0_0_18px_rgba(191,149,63,0.85)]">
                               Barber
                             </span>
                             <span className="bg-gradient-to-r from-slate-200 via-slate-50 to-slate-300 bg-clip-text text-transparent">
-                              &amp; Layanan
+                              &amp; Services
                             </span>
                           </span>
                         </span>
@@ -597,7 +596,7 @@ export default function BookingPage() {
                         </div>
                       </div>
                       <span className="text-[10px] font-modern text-slate-500 italic">
-                        Pilih barber favorit Anda
+                        Choose your preferred barber
                       </span>
                     </div>
 
@@ -629,7 +628,7 @@ export default function BookingPage() {
                         ))}
                         {!barbers.length && (
                           <div className="text-slate-500 text-[11px] font-modern italic col-span-full text-center py-4">
-                            Belum ada barber tersedia.
+                            No barbers available yet.
                           </div>
                         )}
                       </div>
@@ -642,11 +641,11 @@ export default function BookingPage() {
                       <div className="flex items-center gap-2">
                         <div className="h-[1px] w-6 bg-gradient-to-r from-amber-500 to-transparent" />
                         <div className="text-[10px] font-tech text-amber-500 tracking-[0.35em] uppercase">
-                          Layanan
+                          Services
                         </div>
                       </div>
                       <span className="text-[10px] font-modern text-slate-500 italic">
-                        Haircut, shave, styling, dan lainnya
+                        Haircuts, shaves, styling, and more
                       </span>
                     </div>
 
@@ -655,13 +654,13 @@ export default function BookingPage() {
                         <ServiceCard
                           key={s.id}
                           service={s}
-                          selected={selectedService?.id === s.id}
+                          selected={selectedService.id === s.id}
                           onSelect={setSelectedService}
                         />
                       ))}
                       {!services.length && (
                         <div className="text-slate-500 text-[11px] font-modern italic text-center py-4">
-                          Belum ada layanan tersedia.
+                          No services available yet.
                         </div>
                       )}
                     </div>
@@ -677,7 +676,7 @@ export default function BookingPage() {
                         </div>
                       </div>
                       <span className="text-[10px] font-modern text-slate-500 italic">
-                        Opsional: pilih referensi gaya rambut
+                        Optional: pick a reference hairstyle
                       </span>
                     </div>
 
@@ -690,7 +689,7 @@ export default function BookingPage() {
                         />
                       ) : (
                         <div className="text-slate-500 text-[11px] font-modern italic text-center py-4">
-                          Belum ada referensi hairstyle.
+                          No hairstyle references yet.
                         </div>
                       )}
                     </div>
@@ -702,18 +701,18 @@ export default function BookingPage() {
                       <div>
                         <label className="flex items-center gap-2 text-[10px] font-tech text-slate-400 uppercase tracking-[0.3em]">
                           <span className="h-[1px] w-5 bg-gradient-to-r from-amber-500 to-transparent" />
-                          Kupon
+                          Coupon
                         </label>
                         <input
                           type="text"
                           inputMode="numeric"
                           pattern="[0-9]*"
-                          maxLength={30}                         // 🔒 maksimal 30 karakter
-                          placeholder="Kode promo (opsional)"
+                          maxLength={30}                         // max 30 characters
+                          placeholder="Example: 123456 (optional)"
                           className="mt-1 w-full rounded-lg bg-[#050816] px-3 py-2.5 text-[11px] text-slate-100 border border-white/10 shadow-inner shadow-black/60 focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/80 outline-none font-modern placeholder:text-slate-600 transition-all"
                           value={couponCode}
                           onChange={(e) => {
-                            // 🔒 hanya angka 0–9 + hard limit 30 karakter
+                            // digits only, hard limit 30 characters
                             const numeric = e.target.value.replace(/[^0-9]/g, "");
                             setCouponCode(numeric.slice(0, 30));
                           }}
@@ -723,15 +722,15 @@ export default function BookingPage() {
                       <div>
                         <label className="flex items-center gap-2 text-[10px] font-tech text-slate-400 uppercase tracking-[0.3em]">
                           <span className="h-[1px] w-5 bg-gradient-to-r from-amber-500 to-transparent" />
-                          Catatan
+                          Notes
                         </label>
                         <textarea
                           rows={1}
-                          maxLength={255}                        // 🔒 maksimal 255 karakter
+                          maxLength={255}                        // max 255 characters
                           className="mt-1 w-full rounded-lg bg-[#050816] px-3 py-2.5 text-[11px] text-slate-100 border border-white/10 shadow-inner shadow-black/60 focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/80 outline-none font-modern placeholder:text-slate-600 transition-all resize-none"
                           value={note}
                           onChange={(e) => setNote(e.target.value.slice(0, 255))}
-                          placeholder="Contoh: Fade tipis, jangan terlalu pendek..."
+                          placeholder="Example: Low taper fade, keep the top length."
                         />
                       </div>
                     </div>
@@ -740,7 +739,7 @@ export default function BookingPage() {
                   {errorMsg && (
                     <div className="mt-2 rounded-lg border border-red-500/40 bg-red-900/20 px-3 py-2 text-[10px] text-red-200 font-tech tracking-[0.2em] uppercase flex items-center gap-2 relative z-10">
                       <span className="h-1.5 w-1.5 rounded-full bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.9)]" />
-                      ⚠️ {errorMsg}
+                       {errorMsg}
                     </div>
                   )}
 
@@ -758,7 +757,7 @@ export default function BookingPage() {
                     }
                     className="mt-1 w-full rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 px-4 py-3 text-[11px] font-bold text-slate-950 shadow-[0_0_26px_rgba(245,158,11,0.7)] hover:shadow-[0_0_40px_rgba(245,158,11,0.95)] disabled:opacity-50 disabled:grayscale font-tech tracking-[0.28em] uppercase transition-all"
                   >
-                    {submitting ? "Memproses..." : "Konfirmasi Booking"}
+                    {submitting ? "Processing..." : "Confirm Booking"}
                   </motion.button>
                 </motion.section>
 
@@ -779,7 +778,7 @@ export default function BookingPage() {
                       <span className="h-[2px] w-3 rounded-full bg-gradient-to-r from-amber-300 via-amber-500 to-amber-300" />
                     </span>
                     <span className="font-vintage text-base tracking-wide">
-                      Ringkasan Booking
+                      Booking Summary
                     </span>
                   </h2>
 
@@ -797,7 +796,7 @@ export default function BookingPage() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                      <span className="text-[11px] text-slate-400">Layanan</span>
+                      <span className="text-[11px] text-slate-400">Service</span>
                       <span className="text-[11px] text-slate-100 font-medium text-right">
                         {selectedService ? selectedService.name : "-"}
                       </span>
@@ -805,11 +804,11 @@ export default function BookingPage() {
                     <div className="flex justify-between items-center border-b border-white/10 pb-2">
                       <span className="text-[11px] text-slate-400">Hairstyle</span>
                       <span className="text-[11px] text-slate-100 font-medium text-right">
-                        {selectedHairstyle ? selectedHairstyle.name : "Opsional"}
+                        {selectedHairstyle ? selectedHairstyle.name : "Optional"}
                       </span>
                     </div>
                     <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                      <span className="text-[11px] text-slate-400">Tanggal</span>
+                      <span className="text-[11px] text-slate-400">Date</span>
                       <div className="text-right">
                         <div className="text-[11px] text-slate-100">
                           {scheduledDate || "-"}
@@ -824,7 +823,7 @@ export default function BookingPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-2 border-b border-white/10 pb-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-[11px] text-slate-400">Harga Barber</span>
+                        <span className="text-[11px] text-slate-400">Barber Rate</span>
                         <span className="text-[11px] text-slate-100 font-semibold">
                           {selectedBarber
                             ? `Rp ${priceBreakdown.barberBase.toLocaleString("id-ID")}`
@@ -832,7 +831,7 @@ export default function BookingPage() {
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-[11px] text-slate-400">Harga Service</span>
+                        <span className="text-[11px] text-slate-400">Service Price</span>
                         <span className="text-[11px] text-slate-100 font-semibold">
                           {selectedService
                             ? `Rp ${priceBreakdown.serviceBase.toLocaleString("id-ID")}`
@@ -850,7 +849,7 @@ export default function BookingPage() {
                     </div>
                     <div className="flex justify-between items-center pt-1">
                       <span className="text-[11px] text-slate-200 font-semibold">
-                        Total Estimasi
+                        Estimated Total
                       </span>
                       <span className="text-emerald-400 font-bold text-sm tracking-wide">
                         {hasSelection && estimatedTotal
@@ -873,7 +872,7 @@ export default function BookingPage() {
                             <span className="h-[2px] w-3 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.9)]" />
                           </div>
                           <div className="font-tech text-[10px] uppercase tracking-[0.28em] text-emerald-200">
-                            Booking Sukses
+                            Booking Successful
                           </div>
                         </div>
                         <div className="text-[10px] text-emerald-50 font-tech tracking-[0.22em] uppercase border border-emerald-500/40 px-2 py-0.5 rounded-full bg-black/40">
@@ -892,7 +891,7 @@ export default function BookingPage() {
                           Rp {createdBookingTotal.toLocaleString("id-ID")}
                         </span>
                       </div>
-                      {createdBooking?.hairstyle && (
+                      {createdBooking.hairstyle && (
                         <div className="text-slate-200 relative z-10 text-[11px]">
                           Hairstyle:{" "}
                           <span className="text-emerald-100 font-semibold">
@@ -911,9 +910,9 @@ export default function BookingPage() {
 
                   {!bookingResult && (
                     <p className="text-[10px] text-slate-500 font-modern text-center leading-relaxed px-2 relative z-10">
-                      Info pembayaran Midtrans (QRIS/VA) akan muncul otomatis setelah tombol{" "}
-                      <span className="font-semibold text-amber-300">Konfirmasi Booking</span>{" "}
-                      ditekan. Jangan tutup halaman sebelum instruksi muncul.
+                      Midtrans payment info (QRIS/VA) will appear automatically after{" "}
+                      <span className="font-semibold text-amber-300">Confirm Booking</span>{" "}
+                      is pressed. Please keep this page open until the instructions show.
                     </p>
                   )}
                 </motion.section>

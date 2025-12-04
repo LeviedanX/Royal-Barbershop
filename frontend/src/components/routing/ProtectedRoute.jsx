@@ -5,10 +5,10 @@ import { useAuth } from "../../hooks/useAuth";
 
 /**
  * ProtectedRoute
- * - Jika belum login → redirect ke /login
- * - Jika requiredRole di-set dan role user tidak cocok → redirect ke dashboard role-nya sendiri
+ * - If not logged in -> redirect to /login
+ * - If requiredRole is set and the user's role differs -> redirect to their own dashboard
  *
- * Cara pakai di App.jsx (React Router v6):
+ * Usage in App.jsx (React Router v6):
  *
  * <Route element={<ProtectedRoute requiredRole="admin" />}>
  *   <Route path="/dashboard/admin" element={<DashboardAdmin />} />
@@ -20,9 +20,9 @@ import { useAuth } from "../../hooks/useAuth";
  * </Route>
  */
 export default function ProtectedRoute({ requiredRole }) {
-  const { user, initialLoading } = useAuth(); // tetap pakai initialLoading dari hook-mu
+  const { user, initialLoading } = useAuth(); // keep using initialLoading from the hook
 
-  // Loading awal cek session
+  // Initial loading: checking session
   if (initialLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-200 text-sm">
@@ -31,15 +31,15 @@ export default function ProtectedRoute({ requiredRole }) {
     );
   }
 
-  // Belum login → ke login
+  // Not logged in -> redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Cek role kalau diminta
+  // Check role if required
   if (requiredRole && user.role !== requiredRole) {
     const fallback =
-    user.role === "admin"
+      user.role === "admin"
         ? "/dashboard/admin"
         : user.role === "barber"
         ? "/dashboard/barber"
@@ -50,6 +50,6 @@ export default function ProtectedRoute({ requiredRole }) {
     return <Navigate to={fallback} replace />;
   }
 
-  // Lolos semua → render child routes
+  // Passed all checks -> render child routes
   return <Outlet />;
 }

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('business_hours', function (Blueprint $table) {
-            // sesuaikan "is_closed" dengan kolom yang sudah pasti ada di tabelmu
+            // Place after "is_closed" to align with existing columns
             $table->boolean('is_override')
                 ->default(false)
                 ->after('is_closed');

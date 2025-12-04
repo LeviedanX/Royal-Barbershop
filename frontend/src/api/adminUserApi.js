@@ -45,9 +45,9 @@ export const adminUserApi = {
     return data;
   },
 
-  // === Ganti password (admin bisa ganti password user lain) ===
+  // === Change password (admin can change other users) ===
   async changePassword(id, payload) {
-    // payload: { password, password_confirmation } atau bentuk lain sesuai backend
+    // payload: { password, password_confirmation } or other shape expected by backend
     const { data } = await http.post(
       `/admin/users/${id}/change-password`,
       payload
@@ -55,7 +55,7 @@ export const adminUserApi = {
     return data;
   },
 
-  // ganti password dirinya sendiri
+  // Change own password
   async changeMyPassword(payload) {
     const { data } = await http.post("/admin/change-my-password", payload);
     return data;
@@ -63,7 +63,7 @@ export const adminUserApi = {
 };
 
 /**
- * === Named exports yang dipakai DashboardAdmin.jsx ===
+ * === Named exports used by DashboardAdmin.jsx ===
  */
 
 export async function getBarbers(params = {}) {
@@ -98,12 +98,12 @@ export async function deleteCustomer(id) {
   return adminUserApi.deleteCustomer(id);
 }
 
-// ganti password dirinya sendiri (admin)
+// Change own password (admin)
 export async function changeMyPassword(payload) {
   return adminUserApi.changeMyPassword(payload);
 }
 
-// admin ganti password user lain
+// Admin resets another user's password
 export async function adminChangeUserPassword(id, payload) {
   return adminUserApi.changePassword(id, payload);
 }

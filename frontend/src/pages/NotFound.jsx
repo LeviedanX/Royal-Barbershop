@@ -58,11 +58,11 @@ const QUOTES = [
   "Every cut bends the timeline a little.",
   "Time fades, but a sharp fade is eternal.",
   "In some branches, the haircut never finishes.",
-  "The cut you’re looking for exists in another chair.",
+  "The cut you are looking for exists in another chair.",
 ];
 
 // ============================================================================
-// 3D CARD SHELL – tilt + sheen
+// 3D CARD SHELL  tilt + sheen
 // ============================================================================
 
 const Luxury404CardShell = ({ children }) => {
@@ -206,7 +206,7 @@ const HairDust = () => {
 };
 
 // ============================================================================
-// BACKGROUND FX – animasi, efek, “shader” di belakang card
+// BACKGROUND FX  animasi, efek, shader di belakang card
 // ============================================================================
 
 const BackgroundFX = () => {
@@ -304,13 +304,13 @@ export default function NotFound() {
   }, []);
 
   const loreText =
-    "THE CUT YOU’RE LOOKING FOR EXISTS IN ANOTHER BRANCH.";
+    "THE CUT YOURE LOOKING FOR EXISTS IN ANOTHER BRANCH.";
   const typedLore = useTypewriter(loreText, 35);
 
   return (
     <MainLayout>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2-family=Cinzel:wght@400;600;800&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap');
 
         .font-royal { font-family: 'Cinzel', serif; }
         .font-vintage { font-family: 'Italiana', serif; }
@@ -488,13 +488,13 @@ export default function NotFound() {
               {/* JUDUL + QUOTE */}
               <div className="flex flex-col items-center text-center mb-8">
                 <h2 className="font-vintage text-3xl md:text-5xl tracking-wide text-slate-100 drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]">
-                  Halaman Tidak Ditemukan
+                  Page Not Found
                 </h2>
 
                 <div className="flex items-center justify-center gap-6 mt-5 opacity-75">
                   <div className="h-px w-14 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
                   <span className="font-royal text-amber-500 text-xl scanlines rounded-full px-2">
-                    ✦
+                    
                   </span>
                   <div className="h-px w-14 bg-gradient-to-l from-transparent via-amber-500 to-transparent" />
                 </div>
@@ -513,13 +513,10 @@ export default function NotFound() {
                 </AnimatePresence>
               </div>
 
-              {/* PARAGRAF */}
+              {/* PARAGRAPH */}
               <div className="max-w-xl mx-auto text-center mb-8">
                 <p className="font-modern text-[13px] md:text-[14px] text-slate-300 leading-relaxed md:leading-loose px-4">
-                  Seperti potongan rambut yang hilang tersapu angin, halaman
-                  yang Anda cari telah lenyap dari eksistensi digital kami.
-                  Koordinat ini kosong, hanya menyisakan gema dari apa yang
-                  mungkin pernah ada.
+                  Like a strand swept away, the page you seek has vanished from our digital floor. This coordinate is emptyonly echoes of what might have been remain.
                 </p>
               </div>
 
@@ -535,7 +532,7 @@ export default function NotFound() {
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ duration: 0.9, repeat: Infinity }}
                   >
-                    █
+                    
                   </motion.span>
                 </div>
               </div>
@@ -551,7 +548,7 @@ export default function NotFound() {
 }
 
 // ============================================================================
-// BUTTONS ROW – Kembali ke Lobby & Staff Login
+// BUTTONS ROW  Back to Lobby & Staff Login
 // ============================================================================
 
 const ButtonsRow = () => {
@@ -564,7 +561,7 @@ const ButtonsRow = () => {
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8">
-      {/* PRIMARY BUTTON – kembali ke lobby */}
+      {/* PRIMARY BUTTON  back to lobby */}
       <Link
         to="/"
         className="group relative w-full sm:w-auto"
@@ -580,7 +577,7 @@ const ButtonsRow = () => {
 
           <div className="flex flex-col items-start">
             <span className="font-tech text-[9px] tracking-[0.26em] uppercase text-amber-200">
-              Kembali ke HOME
+              Return Home
             </span>
             <span className="font-modern text-[11px] md:text-[12px] tracking-[0.18em] uppercase text-amber-50/95">
               BARBERSHOP BRS
@@ -605,14 +602,14 @@ const ButtonsRow = () => {
         </div>
       </Link>
 
-      {/* SECONDARY BUTTON – staff login */}
+      {/* SECONDARY BUTTON  staff login */}
       <Link to="/login" className="group w-full sm:w-auto relative">
         <div className="relative flex items-center justify-center gap-3 px-10 md:px-11 py-4 md:py-4.5 rounded-[10px] border border-slate-500/35 bg-white/[0.02] hover:bg-white/[0.06] hover:border-amber-400/70 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.75)]">
           <span className="font-modern text-[11px] tracking-[0.22em] uppercase text-slate-300 group-hover:text-amber-50">
             LOGIN
           </span>
           <span className="font-tech text-xs text-amber-400 opacity-0 translate-x-[-6px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-400">
-            →
+            
           </span>
           <div className="pointer-events-none absolute -bottom-[3px] left-4 right-4 h-px bg-gradient-to-r from-transparent via-amber-400/70 to-transparent opacity-0 group-hover:opacity-80 transition-opacity" />
         </div>

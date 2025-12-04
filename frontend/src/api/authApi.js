@@ -3,7 +3,7 @@ import { http } from "./http";
 
 export const authApi = {
   async getCsrf() {
-    // kalau backend tidak pakai route ini, panggilan akan gagal tapi tidak apa-apa
+    // If the backend does not expose this route, the call will fail but can be ignored
     try {
       await http.get("/sanctum/csrf-cookie");
     } catch (_) {
@@ -14,7 +14,7 @@ export const authApi = {
   async login(email, password) {
     await authApi.getCsrf();
     const { data } = await http.post("/login", { email, password });
-    return data; // biasanya { user: {...} }
+    return data; // usually { user: {...} }
   },
 
   async register(payload) {

@@ -4,22 +4,22 @@ namespace App\Services;
 
 use Midtrans\Config;
 use Midtrans\Snap;
-use Midtrans\Transaction; // ⬅️ TAMBAH INI
+use Midtrans\Transaction;
 
 class MidtransService
 {
     public function __construct()
     {
-        // ambil dari config/services.php → .env
+        // Load Midtrans config from services.php and .env
         Config::$serverKey    = config('services.midtrans.server_key');
         Config::$clientKey    = config('services.midtrans.client_key');
         Config::$isProduction = (bool) config('services.midtrans.is_production', false);
 
-        // opsi standar rekomendasi Midtrans
-        Config::$isSanitized  = true;
-        Config::$is3ds        = true;
+        // Midtrans recommended defaults
+        Config::$isSanitized = true;
+        Config::$is3ds       = true;
 
-        // --- FIX untuk error "Undefined array key 10023" (CURLOPT_HTTPHEADER) ---
+        // Fix for "Undefined array key 10023" (CURLOPT_HTTPHEADER)
         if (!is_array(Config::$curlOptions)) {
             Config::$curlOptions = [];
         }
@@ -30,7 +30,7 @@ class MidtransService
     }
 
     /**
-     * Bungkus pemanggilan Snap::getSnapToken
+     * Wrapper for Snap::getSnapToken.
      */
     public function createTransactionToken(array $params): string
     {
@@ -38,7 +38,7 @@ class MidtransService
     }
 
     /**
-     * Ambil status transaksi dari Midtrans (server-to-server).
+     * Get transaction status from Midtrans (server-to-server).
      */
     public function getTransactionStatus(string $orderId)
     {

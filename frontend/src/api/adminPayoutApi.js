@@ -22,7 +22,7 @@ const adminPayoutApi = {
     return data;
   },
 
-  // 🔥 BARU: hapus payout
+  // Delete a payout
   async delete(id) {
     const { data } = await http.delete(`/admin/payouts/${id}`);
     return data;

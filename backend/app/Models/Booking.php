@@ -31,7 +31,7 @@ class Booking extends Model
         'total_price'   => 'decimal:2',
     ];
 
-    // ===== Relasi =====
+    // ===== Relationships =====
 
     public function customer()
     {
@@ -64,7 +64,7 @@ class Booking extends Model
     }
 
     /**
-     * Semua payment (riwayat transaksi) untuk booking ini.
+     * All payments (transaction history) for this booking.
      */
     public function payments()
     {
@@ -72,9 +72,8 @@ class Booking extends Model
     }
 
     /**
-     * Satu payment utama/terbaru (dipakai di dashboard).
-     * Dengan ini, kalau di controller kamu pakai with('payment'),
-     * maka JSON akan punya field "payment" (bukan array).
+     * Latest/primary payment (used in dashboards).
+     * Using with('payment') will return a single "payment" field instead of an array.
      */
     public function payment()
     {

@@ -34,7 +34,7 @@ class AdminUserController extends Controller
         $this->ensureAdmin($request);
 
         $data = $request->validate([
-            'name'         => 'required|string|max:255', // nama user
+            'name'         => 'required|string|max:255', // user full name
             'email'        => 'required|email|unique:users,email',
             'phone'        => 'nullable|string|max:20',
             'password'     => 'required|string|min:6',
@@ -43,8 +43,8 @@ class AdminUserController extends Controller
             'base_price'   => 'nullable|numeric|min:0',
         ]);
 
-        // ---- Normalisasi skill_level agar cocok dengan ENUM di DB ----
-        // ENUM di migration: ['junior', 'senior', 'master']
+        // Normalize skill_level to match the DB enum
+        // Enum in migration: ['junior', 'senior', 'master']
         $allowedLevels = ['junior', 'senior', 'master'];
 
         $rawSkill = isset($data['skill_level'])
@@ -54,13 +54,13 @@ class AdminUserController extends Controller
         if ($rawSkill && in_array($rawSkill, $allowedLevels, true)) {
             $skillLevel = $rawSkill;
         } else {
-            // jika admin mengisi "Advanced", "Top Rated", dll -> fallback aman
+            // If admin enters "Advanced", "Top Rated", etc. -> fall back safely
             $skillLevel = 'junior';
         }
 
         $basePrice = isset($data['base_price']) ? (float) $data['base_price'] : 0;
 
-        // ---- Transaction: kalau create barber gagal, user ikut di-rollback ----
+        // Transaction: if creating the barber fails, rollback the user too
         $result = DB::transaction(function () use ($data, $skillLevel, $basePrice) {
             $user = User::create([
                 'name'          => $data['name'],
@@ -98,7 +98,7 @@ class AdminUserController extends Controller
             'is_active'    => 'sometimes|boolean',
         ]);
 
-        // Normalisasi skill_level juga saat update supaya tetap valid ENUM
+        // Normalize skill_level during update to stay within the enum
         if (array_key_exists('skill_level', $data)) {
             $allowedLevels = ['junior', 'senior', 'master'];
             $rawSkill = $data['skill_level'];
@@ -122,7 +122,7 @@ class AdminUserController extends Controller
     {
         $this->ensureAdmin($request);
 
-        // kalau mau sekaligus hapus user juga:
+        // Optionally delete the linked user as well
         $user = $barber->user;
         $barber->delete();
         if ($user && $user->role === 'barber') {
@@ -173,7 +173,7 @@ class AdminUserController extends Controller
         $this->ensureAdmin($request);
 
         if ($user->role !== 'customer') {
-            return response()->json(['message' => 'Target bukan customer'], 422);
+            return response()->json(['message' => 'Target is not a customer'], 422);
         }
 
         $data = $request->validate([
@@ -191,7 +191,7 @@ class AdminUserController extends Controller
         $this->ensureAdmin($request);
 
         if ($user->role !== 'customer') {
-            return response()->json(['message' => 'Target bukan customer'], 422);
+            return response()->json(['message' => 'Target is not a customer'], 422);
         }
 
         $user->delete();
@@ -199,7 +199,7 @@ class AdminUserController extends Controller
         return response()->json(['message' => 'Customer deleted']);
     }
 
-    // ===== GANTI PASSWORD (admin, barber, customer) =====
+    // ===== PASSWORD CHANGES (admin, barber, customer) =====
 
     public function changeMyPassword(Request $request)
     {
@@ -211,7 +211,7 @@ class AdminUserController extends Controller
         ]);
 
         if (!Hash::check($data['current_password'], $user->password)) {
-            return response()->json(['message' => 'Password lama salah'], 422);
+            return response()->json(['message' => 'Current password is incorrect'], 422);
         }
 
         $user->password = Hash::make($data['new_password']);

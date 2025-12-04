@@ -27,7 +27,7 @@ VITE_API_BASE_URL=http://BACKEND_HOST:8000   # optional; falls back to window.or
 VITE_MIDTRANS_CLIENT_KEY=Mid-client-XXXX      # from Midtrans dashboard
 
 Notes:
-- Leave `VITE_API_BASE_URL` empty if frontend is served from the same host/domain as the backend; otherwise set it to the backend origin (e.g., http://192.168.1.10:8000) to test across different machines.
+- Leave `VITE_API_BASE_URL` empty if the frontend is served from the same host/domain as the backend; otherwise set it to the backend origin (e.g., http://192.168.1.10:8000) to test across different machines.
 - Ensure backend CORS and Midtrans allowed origins include your frontend domain/IP.
 
 ## Run Locally (Dev)
@@ -35,35 +35,34 @@ Notes:
 npm install
 npm run dev
 
-App runs at `http://localhost:5173` by default.
+The app runs at `http://localhost:5173` by default.
 
-## Build & Preview
+## Build and Preview
 
 npm run build
 npm run preview
 
-
-## Two-Machine / LAN Testing (frontend ≠ backend)
-1) Start backend on machine A, accessible via IP (e.g., http://192.168.1.10:8000).
+## Two-Machine / LAN Testing (frontend and backend separated)
+1) Start the backend on machine A, accessible via IP (e.g., http://192.168.1.10:8000).
 2) On machine B (frontend), set `VITE_API_BASE_URL` to that IP, then `npm run dev` or serve the build.
-3) Access frontend via B’s IP/port; payment calls will target machine A.
+3) Access the frontend via B's IP/port; payment calls will target machine A.
 
 ## Deployment Checklist
 - Set `VITE_API_BASE_URL` to your production API origin.
 - Set `VITE_MIDTRANS_CLIENT_KEY` to production.
-- Confirm backend `APP_URL` and CORS allow the frontend domain; add domain to Midtrans allowed origins/callbacks.
+- Confirm backend `APP_URL` and CORS allow the frontend domain; add the domain to Midtrans allowed origins/callbacks.
 - Serve build output (`dist/`) via static hosting or behind a reverse proxy (HTTPS recommended).
 
 ## Scripts
-- `npm run dev` – start dev server
-- `npm run build` – production build
-- `npm run preview` – preview production build locally
+- `npm run dev`  start dev server
+- `npm run build`  production build
+- `npm run preview`  preview production build locally
 
 ## Project Structure (frontend)
-- `src/api` – axios client and API helpers
-- `src/components` – UI components (cards, payment button, layout)
-- `src/pages` – main screens (booking, dashboards, gallery)
-- `src/utils/price.js` – shared pricing logic (barber + service + skill)
+- `src/api`  axios client and API helpers
+- `src/components`  UI components (cards, payment button, layout)
+- `src/pages`  main screens (booking, dashboards, gallery)
+- `src/utils/price.js`  shared pricing logic (barber + service + skill)
 
 ## Backend
-The companion API is Laravel-based (booking, payments, auth). Ensure it is running and reachable at the origin configured in `VITE_API_BASE_URL`.***
+The companion API is Laravel-based (booking, payments, auth). Ensure it is running and reachable at the origin configured in `VITE_API_BASE_URL`.

@@ -43,12 +43,12 @@ class Barber extends Model
     }
 
     /**
-     * Skor ranking barber (gabungan rating + jumlah order).
-     * Misal: 0.7 * avg_rating + 0.3 * order_factor * 5
+     * Barber ranking score (combined rating and number of orders).
+     * Example: 0.7 * avg_rating + 0.3 * order_factor * 5
      */
     public function getScoreAttribute()
     {
-        // Normalisasi: misal anggap 100 completed_orders sudah dianggap 1.0
+        // Normalization: treat 100 completed_orders as 1.0
         $orderFactor = min($this->total_completed_orders / 100, 1);
 
         return 0.7 * ($this->avg_rating ?? 0) + 0.3 * $orderFactor * 5;

@@ -38,7 +38,7 @@ function App() {
       {/* Admin only */}
       <Route element={<ProtectedRoute requiredRole="admin" />}>
         <Route path="/dashboard/admin" element={<DashboardAdmin />} />
-        {/* ⬇️ route baru untuk halaman AdminPayouts */}
+        {/* New route for the AdminPayouts page */}
         <Route path="/admin/payouts" element={<AdminPayouts />} />
       </Route>
 

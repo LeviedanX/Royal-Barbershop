@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barber;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\Review;
-use App\Models\Barber;
 use Illuminate\Http\Request;
 
 class BarberDashboardController extends Controller
 {
     /**
      * GET /api/barber/dashboard
-     * Dashboard data untuk barber yang login.
+     * Dashboard data for the authenticated barber.
      */
     public function index(Request $request)
     {
@@ -29,7 +29,7 @@ class BarberDashboardController extends Controller
 
         $today = now()->toDateString();
 
-        // Antrian aktif (hari ini dan mendatang) untuk barber ini
+        // Active queue (today and upcoming) for this barber
         $queueBookings = Booking::with(['customer', 'service', 'payment'])
             ->where('barber_id', $barber->id)
             ->whereDate('booking_date', '>=', $today)
@@ -37,14 +37,14 @@ class BarberDashboardController extends Controller
             ->orderBy('queue_number')
             ->get();
 
-        // Riwayat booking (limit 50 terakhir)
+        // Booking history (latest 50)
         $history = Booking::with(['customer', 'service', 'payment'])
             ->where('barber_id', $barber->id)
             ->orderByDesc('scheduled_at')
             ->limit(50)
             ->get();
 
-        // Review untuk barber ini
+        // Reviews for this barber
         $reviewList = Review::with(['customer', 'booking.service'])
             ->where('barber_id', $barber->id)
             ->orderByDesc('created_at')
@@ -54,7 +54,7 @@ class BarberDashboardController extends Controller
         $todayQueueCount    = $queueBookings->where('booking_date', $today)->whereIn('status', ['waiting', 'in_progress'])->count();
         $todayFinishedCount = $queueBookings->where('booking_date', $today)->where('status', 'done')->count();
 
-        // Pendapatan hari ini: transaksi yang sudah settlement/capture
+        // Income today: transactions that are settlement/capture
         $todayIncome = Payment::whereIn('transaction_status', ['capture', 'settlement'])
             ->whereHas('booking', function ($q) use ($barber, $today) {
                 $q->where('barber_id', $barber->id)
@@ -62,7 +62,7 @@ class BarberDashboardController extends Controller
             })
             ->sum('gross_amount');
 
-        // Rating rata-rata dari review barber
+        // Average rating from barber reviews
         $avgRating = Review::where('barber_id', $barber->id)->avg('rating_barber');
 
         $queueList = $queueBookings->map(function (Booking $b) {
@@ -112,7 +112,7 @@ class BarberDashboardController extends Controller
                 'todayIncome'   => (float) $todayIncome,
                 'avgRating'     => $avgRating ? round((float) $avgRating, 2) : null,
             ],
-            // untuk kompatibilitas UI, kembalikan key yang sama: todayBookings berisi antrian aktif (hari ini + mendatang)
+            // For UI compatibility: keep todayBookings as active queue (today + upcoming)
             'todayBookings'   => $queueList,
             'historyBookings' => $historyBookings,
             'reviews'         => $reviews,

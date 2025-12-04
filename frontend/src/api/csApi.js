@@ -2,13 +2,13 @@
 import { http } from "./http";
 
 export const csApi = {
-  // list tiket (untuk customer = tiket miliknya, untuk admin = semua tiket)
+  // List tickets (customer sees their own; admin sees all)
   async list(params = {}) {
     const { data } = await http.get("/cs/tickets", { params });
     return data;
   },
 
-  // buat tiket baru (customer)
+  // Create a new ticket (customer)
   async createTicket(payload) {
     // payload: { subject, message }
     const { data } = await http.post("/cs/tickets", payload);
@@ -28,7 +28,7 @@ export const csApi = {
 };
 
 /**
- * === Named export untuk DashboardAdmin.jsx ===
+ * === Named export for DashboardAdmin.jsx ===
  */
 
 export async function fetchTickets(params = {}) {

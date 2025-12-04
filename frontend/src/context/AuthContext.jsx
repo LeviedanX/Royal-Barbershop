@@ -9,20 +9,20 @@ export function AuthProvider({ children }) {
   const [initialLoading, setInitialLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
 
-  // Cek token + /me saat pertama kali load SPA
+  // Check token + /me on initial SPA load
   useEffect(() => {
     let isMounted = true;
 
     const init = async () => {
       const savedToken = localStorage.getItem("auth_token");
 
-      // kalau tidak ada token sama sekali → langsung selesai
+      // No token -> finish early
       if (!savedToken) {
         setInitialLoading(false);
         return;
       }
 
-      // kalau ada token, pasang dulu ke axios
+      // Attach token to axios
       setAuthToken(savedToken);
 
       try {
@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
         if (!isMounted) return;
         setUser(data);
       } catch (err) {
-        // token tidak valid / expired → hapus
+        // Invalid/expired token -> clear
         if (!isMounted) return;
         setAuthToken(null);
         setUser(null);
@@ -49,13 +49,13 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     setAuthLoading(true);
     try {
-      // kita tidak pakai cookie Sanctum SPA, tapi token Bearer
+      // Use bearer token instead of Sanctum SPA cookies
       const { data } = await http.post("/login", { email, password });
 
-      const token = data.token;             // dari AuthController@login
-      const loggedUser = data.user || data; // jaga2
+      const token = data.token;             // from AuthController@login
+      const loggedUser = data.user || data; // safeguard
 
-      // simpan token ke axios + localStorage
+      // Persist token to axios + localStorage
       setAuthToken(token);
       setUser(loggedUser);
 
@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Register hanya untuk customer
+  // Customer registration
   const register = async (payload) => {
     setAuthLoading(true);
     try {
@@ -82,7 +82,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error(err);
     } finally {
-      // hapus token dari axios + localStorage
+      // Clear token from axios + localStorage
       setAuthToken(null);
       setUser(null);
     }

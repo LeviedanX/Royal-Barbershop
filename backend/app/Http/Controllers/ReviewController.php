@@ -11,7 +11,7 @@ class ReviewController extends Controller
 {
     /**
      * POST /api/bookings/{booking}/review
-     * Customer mengisi rating barber + barbershop.
+     * Customer submits ratings for the barber and shop.
      */
     public function store(Request $request, Booking $booking)
     {
@@ -22,11 +22,11 @@ class ReviewController extends Controller
         }
 
         if ($booking->status !== 'done') {
-            return response()->json(['message' => 'Booking belum selesai'], 422);
+            return response()->json(['message' => 'Booking is not completed yet'], 422);
         }
 
         if ($booking->review) {
-            return response()->json(['message' => 'Booking sudah direview'], 422);
+            return response()->json(['message' => 'Booking has already been reviewed'], 422);
         }
 
         $data = $request->validate([
@@ -44,7 +44,7 @@ class ReviewController extends Controller
             'comment'       => $data['comment'] ?? null,
         ]);
 
-        // Update statistik barber
+        // Update barber statistics
         $barber = Barber::findOrFail($booking->barber_id);
         $barber->total_reviews = Review::where('barber_id', $barber->id)->count();
         $barber->avg_rating    = Review::where('barber_id', $barber->id)->avg('rating_barber') ?? 0;

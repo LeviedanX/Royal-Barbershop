@@ -98,7 +98,7 @@ export default function Navbar() {
 
   // --- Styles Definition ---
   
-  // Link Style: Teks Emas Pudar, berubah menjadi Emas Terang saat aktif
+  // Link style: muted gold text that brightens when active
   const navLinkClass = ({ isActive }) =>
     [
       "relative px-4 py-2 text-sm tracking-wide transition-all duration-300 font-serif italic",
@@ -107,14 +107,20 @@ export default function Navbar() {
         : "text-stone-400 hover:text-amber-200",
     ].join(" ");
 
-  // Button Style: Fisik 3D, inset shadow, border emas tipis
+  // Button style: tactile 3D with inset shadow and slim gold border
   const buttonBase = "relative overflow-hidden px-5 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all duration-300 transform active:scale-95";
   
   const primaryBtn = `${buttonBase} bg-amber-700 text-amber-50 border border-amber-600/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.5)] hover:bg-amber-600 hover:shadow-[0_0_15px_rgba(217,119,6,0.4)]`;
   
   const secondaryBtn = `${buttonBase} bg-stone-900 text-stone-300 border border-stone-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:text-white hover:border-stone-500`;
 
-  const dashboardPath = user?.role === "admin" ? "/dashboard/admin" : user?.role === "barber" ? "/dashboard/barber" : "/dashboard/customer";
+  const userRole = user?.role;
+  const dashboardPath =
+    userRole === "admin"
+      ? "/dashboard/admin"
+      : userRole === "barber"
+      ? "/dashboard/barber"
+      : "/dashboard/customer";
 
   return (
     <>
@@ -122,8 +128,8 @@ export default function Navbar() {
       <nav
         className={[
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          scrolled 
-            ? "bg-[#1c1917]/95 backdrop-blur-md py-2 border-b border-amber-800/40 shadow-xl" 
+          scrolled
+            ? "bg-[#1c1917]/95 backdrop-blur-md py-2 border-b border-amber-800/40 shadow-xl"
             : "bg-transparent py-4 border-b border-transparent",
         ].join(" ")}
         style={{ fontFamily: SANS_FONT }}

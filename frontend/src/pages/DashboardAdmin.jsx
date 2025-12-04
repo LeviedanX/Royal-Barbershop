@@ -24,7 +24,7 @@ import {
   deleteBarber,
   getCustomers,
   createCustomer,
-  deleteCustomer, // ⬅️ tambahkan ini
+  deleteCustomer,
   changeMyPassword,
   adminChangeUserPassword,
 } from "../api/adminUserApi";
@@ -38,7 +38,7 @@ import {
   getPayments,
   getPaymentDetail,
   updatePayment,
-  deletePayment, // ⬅️ tambahkan ini
+  deletePayment,
 } from "../api/adminPaymentApi";
 import {
   getAccessLogs,
@@ -61,7 +61,7 @@ import {
   getAdminReviews,
   deleteAdminReview,
 } from "../api/adminCatalogApi";
-// Tambahan import untuk operasi update/CRUD lengkap
+// Additional imports for full CRUD operations
 import { updateBarber, updateCustomer } from "../api/adminUserApi";
 import {
   updateAdminService,
@@ -72,15 +72,7 @@ import {
 
 import AdminPayouts from "./AdminPayouts";
 
-const dayNames = [
-  "Minggu",
-  "Senin",
-  "Selasa",
-  "Rabu",
-  "Kamis",
-  "Jumat",
-  "Sabtu",
-];
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // === ATMOSFER DASHBOARD: Partikel, Glow, Scanline ==========================
 const FloatingParticles = () => {
@@ -200,11 +192,11 @@ function LuxuryPole3D() {
       groupRef.current.position.y = Math.sin(t * 1.1) * 0.1;
     }
 
-    if (poleRef.current?.material?.map) {
+    if (poleRef.current.material.map) {
       poleRef.current.material.map.offset.y -= delta * 0.25;
     }
 
-    if (glassRef.current?.material) {
+    if (glassRef.current.material) {
       const mat = glassRef.current.material;
       mat.opacity = 0.32 + Math.sin(t * 2.2) * 0.06;
       mat.emissive = new THREE.Color("#fefce8");
@@ -345,11 +337,11 @@ export default function DashboardAdmin() {
   const [editingAnnId, setEditingAnnId] = useState(null);
   const [loadingAnn, setLoadingAnn] = useState(false);
 
-  // batas karakter pengumuman
+  // announcement character limits
   const ANNOUNCEMENT_TITLE_MAX = 50;
   const ANNOUNCEMENT_CONTENT_MAX = 255;
 
-  // batas field barber
+  // barber field limits
   const BARBER_NAME_MAX = 60;
   const BARBER_EMAIL_MAX = 60;
   const BARBER_PHONE_MAX = 16;
@@ -501,24 +493,24 @@ export default function DashboardAdmin() {
   };
 
   const handleDeleteAccessLog = async (id) => {
-    if (!confirm("Hapus log ini?")) return;
+    if (!confirm("Delete this log")) return;
     try {
       await deleteAccessLog(id);
       reloadAccessLogs();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus log");
+      alert("Failed to delete log");
     }
   };
 
   const handleClearAccessLogs = async () => {
-    if (!confirm("Hapus semua access logs?")) return;
+    if (!confirm("Delete all access logs")) return;
     try {
       await clearAccessLogs();
       reloadAccessLogs();
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus semua log");
+      alert("Failed to delete all logs");
     }
   };
 
@@ -534,13 +526,13 @@ export default function DashboardAdmin() {
   const handleSaveAnnouncement = async (e) => {
     e.preventDefault();
     if (!newAnn.title || !newAnn.content) return;
-    // defensive check kalau ada yang bypass dari DevTools
+    // Defensive check in case someone bypasses DevTools
     if (
       newAnn.title.length > ANNOUNCEMENT_TITLE_MAX ||
       newAnn.content.length > ANNOUNCEMENT_CONTENT_MAX
     ) {
       alert(
-        `Judul maksimal ${ANNOUNCEMENT_TITLE_MAX} karakter dan isi maksimal ${ANNOUNCEMENT_CONTENT_MAX} karakter.`
+        `Title max ${ANNOUNCEMENT_TITLE_MAX} characters and content max ${ANNOUNCEMENT_CONTENT_MAX} characters.`
       );
       return;
     }
@@ -580,7 +572,7 @@ export default function DashboardAdmin() {
   };
 
   const handleDeleteAnnouncement = async (id) => {
-    if (!confirm("Yakin hapus pengumuman?")) return;
+    if (!confirm("Delete this announcement")) return;
     try {
       await deleteAnnouncement(id);
       reloadAnnouncements();
@@ -610,31 +602,31 @@ export default function DashboardAdmin() {
     const displayName = (newBarber.display_name || "").trim();
     const basePriceStr = (newBarber.base_price ?? "").toString().trim();
 
-    // 1) NAMA USER (LOGIN)
-    //   - huruf A-Z / a-z dan spasi
-    //   - maksimal 60 karakter
+    // 1) USER NAME (LOGIN)
+    //   - letters A-Z / a-z and spaces
+    //   - maksimal 60 characters
     if (!/^[A-Za-z ]{1,60}$/.test(name)) {
       alert(
-        "Nama user hanya boleh berisi huruf A-Z (lowercase/uppercase) dan spasi, maksimal 60 karakter."
+        "User name must be letters/spaces only, max 60 characters."
       );
       return;
     }
 
     // 2) DISPLAY NAME
-    //   - huruf A-Z / a-z dan spasi
-    //   - maksimal 60 karakter
+    //   - letters A-Z / a-z and spaces
+    //   - maksimal 60 characters
     if (!/^[A-Za-z ]{1,60}$/.test(displayName)) {
       alert(
-        "Display name hanya boleh berisi huruf A-Z (lowercase/uppercase) dan spasi, maksimal 60 karakter."
+        "Display name must be letters/spaces only, max 60 characters."
       );
       return;
     }
 
-    // Jika sedang edit barber: cukup update display_name / skill_level / base_price
+    // Jika sedang Edit Barber: cukup update display_name / skill_level / base_price
     if (editingBarberId) {
       const basePriceStr = (newBarber.base_price ?? "").toString().trim();
       if (basePriceStr !== "" && !/^[0-9]+$/.test(basePriceStr)) {
-        alert("Base price hanya boleh berisi angka 0-9 (tanpa titik, koma, atau spasi).");
+        alert("Base price must be digits only (no dots/commas/spaces).");
         return;
       }
       const numericBasePrice =
@@ -659,57 +651,57 @@ export default function DashboardAdmin() {
         reloadBarbers();
       } catch (err) {
         console.error(err);
-        alert("Gagal memperbarui barber");
+        alert("Failed to update barber");
       }
       return;
     }
 
     // 3) EMAIL
-    //   - maksimal 60 karakter
-    //   - huruf lowercase saja
-    //   - harus domain @barber.com
-    //   - hanya a-z, 0-9, titik, underscore, dash sebelum @
+    //   - max 60 characters
+    //   - lowercase only
+    //   - must use @barber.com domain
+    //   - only a-z, 0-9, dot, underscore, dash before @
     if (!email) {
-      alert("Email wajib diisi.");
+      alert("Email is required.");
       return;
     }
     if (email.length > BARBER_EMAIL_MAX) {
-      alert("Email maksimal 60 karakter.");
+      alert("Email maximum is 60 characters.");
       return;
     }
     if (!/^[a-z0-9._-]+@barber\.com$/.test(email)) {
       alert(
-        "Email harus menggunakan domain @barber.com, huruf lowercase, dan hanya boleh berisi a-z, 0-9, titik (.), underscore (_), atau strip (-)."
+        "Email must use @barber.com in lowercase and only letters, numbers, dot, underscore, or dash."
       );
       return;
     }
 
-    // 4) NO. HP (opsional tapi kalau diisi harus valid)
-    //   - hanya angka 0-9
-    //   - maksimal 16 karakter
+    // 4) PHONE (optional, must be valid if provided)
+    //   - digits 0-9 only
+    //   - maksimal 16 characters
     if (phone && !/^[0-9]{1,16}$/.test(phone)) {
-      alert("No. HP hanya boleh berisi angka 0-9 dan maksimal 16 digit.");
+      alert("Phone number must be digits only (max 16).");
       return;
     }
 
     // 5) BASE PRICE
-    //   - hanya angka 0-9
+    //   - digits only (0-9)
     //   - minimal 0
     //   - tidak boleh ada titik, koma, spasi, minus, dsb.
     if (basePriceStr !== "" && !/^[0-9]+$/.test(basePriceStr)) {
-      alert("Base price hanya boleh berisi angka 0-9 (tanpa titik, koma, atau spasi).");
+      alert("Base price must be digits only (no dots/commas/spaces).");
       return;
     }
     const numericBasePrice =
       basePriceStr === "" ? 0 : Number(basePriceStr);
 
     if (Number.isNaN(numericBasePrice) || numericBasePrice < 0) {
-      alert("Base price minimal 0 dan harus berupa angka bulat.");
+      alert("Base price must be 0 or greater and whole.");
       return;
     }
 
     if (!newBarber.password || newBarber.password.length < 8) {
-      alert("Password barber minimal 8 karakter.");
+      alert("Barber password must be at least 8 characters.");
       return;
     }
 
@@ -735,27 +727,27 @@ export default function DashboardAdmin() {
       reloadBarbers();
     } catch (err) {
       console.error(err);
-      alert("Gagal menambah barber");
+      alert("Failed to add barber");
     }
   };
 
   const handleDeleteBarber = async (barberId) => {
-    if (!confirm("Yakin hapus barber ini?")) return;
+    if (!confirm("Delete this barber")) return;
     try {
       await deleteBarber(barberId);
       reloadBarbers();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus barber");
+      alert("Failed to delete barber");
     }
   };
 
   const handleEditBarber = (barber) => {
     setEditingBarberId(barber.id);
     setNewBarber({
-      name: barber.user?.name || "",
-      email: barber.user?.email || "",
-      phone: barber.user?.phone || "",
+      name: (barber.user?.name || ""),
+      email: barber.user.email || "",
+      phone: barber.user.phone || "",
       password: "",
       display_name: barber.display_name || "",
       skill_level: barber.skill_level || "",
@@ -780,26 +772,26 @@ export default function DashboardAdmin() {
   const handleCreateCustomer = async (e) => {
     e.preventDefault();
 
-    // Normalisasi & trim
+    // Normalize & trim
     const name = (newCustomer.name || "").trim();
     const email = (newCustomer.email || "").trim();
     const phone = (newCustomer.phone || "").trim();
     const password = newCustomer.password || "";
 
-    // 1) NAMA
-    //    - hanya huruf A-Z / a-z dan spasi
-    //    - maksimal 60 karakter
+    // 1) NAME
+    //    - letters A-Z / a-z and spaces
+    //    - maximum 60 characters
     if (!/^[A-Za-z ]{1,60}$/.test(name)) {
       alert(
-        "Nama customer hanya boleh berisi huruf A-Z (lowercase/uppercase) dan spasi, maksimal 60 karakter."
+        "Customer name must be letters/spaces only, max 60 characters."
       );
       return;
     }
 
-    // Jika mode edit customer: hanya update name/phone
+    // If editing a customer: only update name/phone
     if (editingCustomerId) {
       if (phone && !/^[0-9]{1,16}$/.test(phone)) {
-        alert("No. HP customer hanya boleh berisi angka 0-9 dan maksimal 16 digit.");
+        alert("Customer phone must be digits only, max 16 digits.");
         return;
       }
       try {
@@ -809,42 +801,42 @@ export default function DashboardAdmin() {
         reloadCustomers();
       } catch (err) {
         console.error(err);
-        alert("Gagal memperbarui customer");
+        alert("Failed to update customer");
       }
       return;
     }
 
     // 2) EMAIL
-    //    - wajib diisi
-    //    - maksimal 60 karakter
-    //    - huruf lowercase saja
-    //    - harus domain @barber.com
+    //    - required
+    //    - max 60 characters
+    //    - lowercase only
+    //    - must use @barber.com
     if (!email) {
-      alert("Email customer wajib diisi.");
+      alert("Customer email is required.");
       return;
     }
     if (email.length > CUSTOMER_EMAIL_MAX) {
-      alert("Email customer maksimal 60 karakter.");
+      alert("Customer email maximum is 60 characters.");
       return;
     }
     if (!/^[a-z]+@barber\.com$/.test(email)) {
       alert(
-        "Email customer harus menggunakan huruf kecil (a-z) dan domain @barber.com, contoh: johndoe@barber.com."
+        "Customer email must be lowercase @barber.com (e.g., johndoe@barber.com)."
       );
       return;
     }
 
-    // 3) NO. HP (opsional, tapi kalau diisi harus valid)
-    //    - hanya angka 0-9
-    //    - maksimal 16 digit
+    // 3) PHONE (optional, must be valid if provided)
+    //    - digits 0-9 only
+    //    - max 16 digits
     if (phone && !/^[0-9]{1,16}$/.test(phone)) {
-      alert("No. HP customer hanya boleh berisi angka 0-9 dan maksimal 16 digit.");
+      alert("Customer phone must be digits only, max 16 digits.");
       return;
     }
 
-    // 4) PASSWORD MINIMAL 8 KARAKTER
+    // 4) PASSWORD MINIMUM 8 characters
     if (!password || password.length < 8) {
-      alert("Password customer minimal 8 karakter.");
+      alert("Customer password must be at least 8 characters.");
       return;
     }
 
@@ -864,18 +856,18 @@ export default function DashboardAdmin() {
       reloadCustomers();
     } catch (err) {
       console.error(err);
-      alert("Gagal menambah customer");
+      alert("Failed to add customer");
     }
   };
 
   const handleDeleteCustomer = async (customerId) => {
-    if (!confirm("Yakin hapus customer ini?")) return;
+    if (!confirm("Delete this customer")) return;
     try {
       await deleteCustomer(customerId);
       reloadCustomers();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus customer");
+      alert("Failed to delete customer");
     }
   };
 
@@ -902,38 +894,38 @@ export default function DashboardAdmin() {
       reloadBusinessHours();
     } catch (err) {
       console.error(err);
-      alert("Gagal update jam buka");
+      alert("Failed to update business hours");
     } finally {
       setBusinessLoading(false);
     }
   };
 
   const handleCloseShop = async () => {
-    if (!confirm("Tutup toko sementara? Semua hari akan closed.")) return;
+    if (!confirm("Close the store temporarily All days will be closed.")) return;
 
     setBusinessLoading(true);
     try {
-      await closeShop();          // 🔹 pakai endpoint khusus
+      await closeShop();          //  using dedicated endpoint
       await reloadBusinessHours(); // refresh tabel
     } catch (err) {
       console.error(err);
-      alert("Gagal menutup toko");
+      alert("Failed to close store");
     } finally {
       setBusinessLoading(false);
     }
   };
 
   const handleOpenShopDefault = async () => {
-    if (!confirm("Buka toko dengan jam default 07:00–21:00 untuk semua hari?"))
+    if (!confirm("Open store with default 07:0021:00 for all days"))
       return;
 
     setBusinessLoading(true);
     try {
-      await openShopDefault();      // 🔹 pakai endpoint khusus
-      await reloadBusinessHours();  // refresh tabel (jam & status)
+      await openShopDefault();      //  using dedicated endpoint
+      await reloadBusinessHours();  // refresh table (hours & status)
     } catch (err) {
       console.error(err);
-      alert("Gagal membuka toko");
+      alert("Failed to open store");
     } finally {
       setBusinessLoading(false);
     }
@@ -958,7 +950,7 @@ export default function DashboardAdmin() {
       setPaymentModalOpen(true);
     } catch (err) {
       console.error(err);
-      alert("Gagal mengambil detail payment");
+      alert("Failed to fetch payment detail");
     }
   };
 
@@ -969,18 +961,18 @@ export default function DashboardAdmin() {
   };
 
   const handleDeletePayment = async (paymentId) => {
-    if (!confirm("Yakin hapus payment ini?")) return;
+    if (!confirm("Delete this payment")) return;
     try {
       await deletePayment(paymentId);
       reloadPayments();
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus payment");
+      alert("Failed to delete payment");
     }
   };
 
   const handleUpdatePayment = async () => {
-    if (!editingPayment?.id) return;
+    if (!editingPayment.id) return;
     try {
       await updatePayment(editingPayment.id, {
         transaction_status: editingPayment.transaction_status,
@@ -993,7 +985,7 @@ export default function DashboardAdmin() {
       setPaymentModalOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Gagal memperbarui payment");
+      alert("Failed to update payment");
     }
   };
 
@@ -1008,37 +1000,37 @@ export default function DashboardAdmin() {
 
     if (!/^[A-Za-z ]{1,60}$/.test(name)) {
       alert(
-        "Nama service hanya boleh berisi huruf A-Z (lowercase/uppercase) dan spasi, maksimal 60 karakter."
+        "Service name must be letters/spaces only, max 60 characters."
       );
       return;
     }
 
     if (description.length > CATALOG_DESC_MAX) {
-      alert("Deskripsi service maksimal 255 karakter.");
+      alert("Service description max 255 characters.");
       return;
     }
 
     if (basePriceStr === "") {
-      alert("Harga service wajib diisi (minimal 0).");
+      alert("Service price is required (min 0).");
       return;
     }
     if (!/^[0-9]+$/.test(basePriceStr)) {
-      alert("Harga hanya boleh berisi angka 0-9 tanpa titik (.) atau koma (,).");
+      alert("Price must be digits only (no separators).");
       return;
     }
     const basePriceNum = Number(basePriceStr);
     if (Number.isNaN(basePriceNum) || basePriceNum < 0) {
-      alert("Harga minimal 0 dan harus berupa angka bulat.");
+      alert("Price must be 0 or greater and whole.");
       return;
     }
 
     if (!/^[0-9]+$/.test(durationStr)) {
-      alert("Durasi hanya boleh berisi angka 0-9.");
+      alert("Duration must be digits only.");
       return;
     }
     const durationNum = Number(durationStr);
     if (durationNum < 1 || durationNum > 180) {
-      alert("Durasi service harus antara 1 sampai 180 menit.");
+      alert("Service duration must be between 1 and 180 minutes.");
       return;
     }
 
@@ -1071,18 +1063,18 @@ export default function DashboardAdmin() {
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal menyimpan service");
+      alert("Failed to save service");
     }
   };
 
   const handleDeleteService = async (id) => {
-    if (!confirm("Hapus service ini?")) return;
+    if (!confirm("Delete this service")) return;
     try {
       await deleteAdminService(id);
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus service");
+      alert("Failed to delete service");
     }
   };
 
@@ -1116,22 +1108,22 @@ export default function DashboardAdmin() {
     const defaultServiceIdStr = (newHairstyle.default_service_id || "").toString().trim();
 
     if (!/^[A-Za-z ]{1,60}$/.test(name)) {
-      alert("Nama hairstyle hanya boleh berisi huruf A-Z (lowercase/uppercase) dan spasi, maksimal 60 karakter.");
+      alert("Hairstyle name must be letters/spaces only, max 60 characters.");
       return;
     }
 
     if (description.length > CATALOG_DESC_MAX) {
-      alert("Deskripsi hairstyle maksimal 255 karakter.");
+      alert("Hairstyle description max 255 characters.");
       return;
     }
 
     if (!newHairstyle.image_url) {
-      alert("URL gambar wajib diisi.");
+      alert("Image URL is required.");
       return;
     }
 
     if (defaultServiceIdStr && !/^[0-9]+$/.test(defaultServiceIdStr)) {
-      alert("Service default harus berupa angka ID service.");
+      alert("Default service must be a numeric service ID.");
       return;
     }
 
@@ -1161,18 +1153,18 @@ export default function DashboardAdmin() {
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal menyimpan hairstyle");
+      alert("Failed to save hairstyle");
     }
   };
 
   const handleDeleteHairstyle = async (id) => {
-    if (!confirm("Hapus hairstyle ini?")) return;
+    if (!confirm("Delete this hairstyle")) return;
     try {
       await deleteAdminHairstyle(id);
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus hairstyle");
+      alert("Failed to delete hairstyle");
     }
   };
 
@@ -1183,7 +1175,7 @@ export default function DashboardAdmin() {
       image_url: h.image_url || "",
       description: h.description || "",
       default_service_id:
-        h.default_service_id || h.default_service?.id || "",
+        h.default_service_id || h.default_service.id || "",
     });
   };
 
@@ -1205,26 +1197,26 @@ export default function DashboardAdmin() {
     const discountStr = (newCoupon.discount_percent ?? "").toString().trim();
 
     if (!code) {
-      alert("Kode kupon wajib diisi.");
+      alert("Coupon code is required.");
       return;
     }
     if (code.length > COUPON_CODE_MAX) {
-      alert(`Kode kupon maksimal ${COUPON_CODE_MAX} karakter.`);
+      alert(`Coupon code max ${COUPON_CODE_MAX} characters.`);
       return;
     }
 
     if (discountStr === "" || !/^[0-9]+$/.test(discountStr)) {
-      alert("Diskon harus angka 0-99.");
+      alert("Discount must be 0-99.");
       return;
     }
     const discNum = Number(discountStr);
     if (discNum < 1 || discNum > 99) {
-      alert("Diskon harus 1-99%.");
+      alert("Discount must be 1-99%.");
       return;
     }
 
     if (reason.length > COUPON_REASON_MAX) {
-      alert(`Alasan maksimal ${COUPON_REASON_MAX} karakter.`);
+      alert(`Reason max ${COUPON_REASON_MAX} characters.`);
       return;
     }
 
@@ -1257,18 +1249,18 @@ export default function DashboardAdmin() {
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal menyimpan kupon");
+      alert("Failed to save coupon");
     }
   };
 
   const handleDeleteCoupon = async (id) => {
-    if (!confirm("Hapus coupon ini?")) return;
+    if (!confirm("Delete this coupon")) return;
     try {
       await deleteAdminCoupon(id);
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus coupon");
+      alert("Failed to delete coupon");
     }
   };
 
@@ -1302,17 +1294,17 @@ export default function DashboardAdmin() {
     const discountStr = (newPromo.discount_percent ?? "").toString().trim();
 
     if (!name) {
-      alert("Nama promo wajib diisi.");
+      alert("Promo name is required.");
       return;
     }
 
     if (discountStr === "" || !/^[0-9]+$/.test(discountStr)) {
-      alert("Diskon harus angka 0-99.");
+      alert("Discount must be 0-99.");
       return;
     }
     const discNum = Number(discountStr);
     if (discNum < 1 || discNum > 99) {
-      alert("Diskon harus 1-99%.");
+      alert("Discount must be 1-99%.");
       return;
     }
 
@@ -1348,18 +1340,18 @@ export default function DashboardAdmin() {
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal menyimpan promo");
+      alert("Failed to save promo");
     }
   };
 
   const handleDeletePromo = async (id) => {
-    if (!confirm("Hapus promo ini?")) return;
+    if (!confirm("Delete this promo")) return;
     try {
       await deleteAdminPromo(id);
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus promo");
+      alert("Failed to delete promo");
     }
   };
 
@@ -1388,13 +1380,13 @@ export default function DashboardAdmin() {
   };
 
   const handleDeleteReview = async (id) => {
-    if (!confirm("Hapus review ini?")) return;
+    if (!confirm("Delete this review")) return;
     try {
       await deleteAdminReview(id);
       reloadCatalog();
     } catch (err) {
       console.error(err);
-      alert("Gagal hapus review");
+      alert("Failed to delete review");
     }
   };
 
@@ -1402,9 +1394,9 @@ export default function DashboardAdmin() {
   const handleMyPasswordSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ 1. VALIDASI terlebih dulu (di sisi frontend)
+    //  1. Validate on the frontend first
     if (!myPasswordForm.new_password || myPasswordForm.new_password.length < 8) {
-      alert("Password baru minimal 8 karakter.");
+      alert("New password must be at least 8 characters.");
       return;
     }
 
@@ -1412,11 +1404,11 @@ export default function DashboardAdmin() {
       myPasswordForm.new_password !==
       myPasswordForm.new_password_confirmation
     ) {
-      alert("Konfirmasi password baru tidak sama.");
+      alert("New password confirmation does not match.");
       return;
     }
 
-    // ✅ 2. Baru mulai proses loading & call API
+    //  2. Then start loading and call the API
     setMyPasswordLoading(true);
     try {
       await changeMyPassword({
@@ -1427,7 +1419,7 @@ export default function DashboardAdmin() {
         new_password_confirmation: myPasswordForm.new_password_confirmation,
         password_confirmation: myPasswordForm.new_password_confirmation,
       });
-      alert("Password berhasil diganti");
+      alert("Password changed successfully");
       setMyPasswordForm({
         current_password: "",
         new_password: "",
@@ -1435,7 +1427,7 @@ export default function DashboardAdmin() {
       });
     } catch (err) {
       console.error(err);
-      alert("Gagal mengganti password (cek current password / format payload)");
+      alert("Failed to change password (check current password/payload)");
     } finally {
       setMyPasswordLoading(false);
     }
@@ -1444,7 +1436,7 @@ export default function DashboardAdmin() {
   const handleTargetPasswordSubmit = async (e) => {
     e.preventDefault();
     if (!targetUserId) {
-      alert("Pilih user dulu");
+      alert("Select a user first");
       return;
     }
     setTargetPasswordLoading(true);
@@ -1453,11 +1445,11 @@ export default function DashboardAdmin() {
         new_password: targetNewPassword,
         password: targetNewPassword,
       });
-      alert("Password user berhasil diganti");
+      alert("User password changed successfully");
       setTargetNewPassword("");
     } catch (err) {
       console.error(err);
-      alert("Gagal mengganti password user");
+      alert("Failed to change user password");
     } finally {
       setTargetPasswordLoading(false);
     }
@@ -1467,8 +1459,8 @@ export default function DashboardAdmin() {
   const allUsersForSettings = useMemo(() => {
     const barberUsers =
       barbers.map((b) => ({
-        id: b.user?.id,
-        name: `${b.user?.name || "Barber"} (${b.display_name || "-"})`,
+        id: b.user.id,
+        name: `{b.user?.name || "Barber"} ({b.display_name || "-"})`,
         role: "barber",
       })) || [];
 
@@ -1488,7 +1480,7 @@ export default function DashboardAdmin() {
       <AnnouncementBanner />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {/* Status Toko */}
+        {/* STORE STATUS */}
         <motion.div
           className="relative rounded-xl border border-amber-500/40 bg-gradient-to-br from-[#1b130f]/95 via-[#130d0a]/95 to-black/90 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.9)] overflow-hidden card-lux"
           initial={{ opacity: 0, y: 10 }}
@@ -1499,7 +1491,7 @@ export default function DashboardAdmin() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-1">
               <div className="text-[10px] font-tech tracking-[0.25em] text-amber-300/90">
-                STATUS TOKO
+                STORE STATUS
               </div>
               <span className="h-[1px] w-10 bg-gradient-to-r from-amber-500 to-transparent" />
             </div>
@@ -1509,20 +1501,21 @@ export default function DashboardAdmin() {
               }`}
             >
               {isShopClosed
-                ? "Tutup sementara"
-                : "Buka (07:00–21:00)"}
+                ? "Temporarily closed"
+                : "Open (07:00-21:00)"}
             </div>
             <div className="mt-2 text-[11px] text-amber-100/70 font-modern leading-relaxed">
-              Diatur dari menu{" "}
+              Managed from the{" "}
               <span className="text-soft-gold font-semibold">
                 Business Hours
               </span>
-              . Kamu bisa tutup sementara atau buka toko.
+              {" "}
+              menu. You can temporarily close or open the store.
             </div>
           </div>
         </motion.div>
 
-        {/* Tiket CS */}
+        {/* Support Tickets */}
         <motion.div
           className="relative rounded-xl border border-amber-500/35 bg-gradient-to-br from-[#18110c] via-[#120c08] to-[#090605] p-3 shadow-[0_18px_40px_rgba(0,0,0,0.9)] overflow-hidden card-lux"
           initial={{ opacity: 0, y: 10 }}
@@ -1533,7 +1526,7 @@ export default function DashboardAdmin() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-1">
               <div className="text-[10px] font-tech tracking-[0.25em] text-amber-200/80">
-                TIKET CS
+                Support Tickets
               </div>
               <div className="flex gap-[3px]">
                 <span className="w-1 h-1 rounded-full bg-emerald-400/80" />
@@ -1544,12 +1537,12 @@ export default function DashboardAdmin() {
               {tickets.length} tiket
             </div>
             <div className="mt-1 text-[11px] text-amber-100/70">
-              Data real-time pengguna service tiket.
+              Real-time ticket data.
             </div>
           </div>
         </motion.div>
 
-        {/* Pengumuman aktif */}
+        {/* ACTIVE ANNOUNCEMENTS */}
         <motion.div
           className="relative rounded-xl border border-amber-500/40 bg-gradient-to-br from-[#18110c] via-[#130d0a] to-black p-3 shadow-[0_18px_40px_rgba(0,0,0,0.9)] overflow-hidden card-lux"
           initial={{ opacity: 0, y: 10 }}
@@ -1560,20 +1553,20 @@ export default function DashboardAdmin() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-1">
               <div className="text-[10px] font-tech tracking-[0.25em] text-amber-300/90">
-                PENGUMUMAN AKTIF
+                ACTIVE ANNOUNCEMENTS
               </div>
             </div>
             <div className="text-amber-300 font-semibold text-lg text-glow-gold">
-              {announcements.filter((a) => a.is_active).length} aktif
+              {announcements.filter((a) => a.is_active).length} active
             </div>
             <div className="mt-1 text-[11px] text-amber-100/75">
-              Papan pengumuman untuk semua user.
+              Announcement board for all users.
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* BROADCAST: Kelola Pengumuman */}
+      {/* BROADCAST: Manage Announcements */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.1fr,1fr] gap-4 mt-4">
         <div className="relative rounded-xl border border-amber-900/60 bg-[#16100c]/95 backdrop-blur-xl p-4 shadow-[0_24px_60px_rgba(0,0,0,0.95)] overflow-hidden card-lux">
           <div className="absolute inset-0 opacity-[0.07] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
@@ -1583,7 +1576,7 @@ export default function DashboardAdmin() {
                 BROADCAST
               </span>
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                Kelola Pengumuman
+                Manage Announcements
               </div>
             </div>
           </div>
@@ -1613,13 +1606,13 @@ export default function DashboardAdmin() {
                           : "border-amber-700 text-amber-300/80 bg-black/40"
                       }`}
                     >
-                      {a.is_active ? "AKTIF" : "NONAKTIF"}
+                      {a.is_active ? "ACTIVE" : "INACTIVE"}
                     </button>
                     <button
                       onClick={() => handleDeleteAnnouncement(a.id)}
                       className="px-2 py-0.5 rounded-full border border-red-500/70 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                     >
-                      HAPUS
+                      DELETE
                     </button>
                   </div>
                 </div>
@@ -1630,7 +1623,7 @@ export default function DashboardAdmin() {
             ))}
             {!announcements.length && (
               <div className="text-amber-100/70 font-modern text-[11px]">
-                Belum ada pengumuman. Tambahkan di form kanan.
+                No announcements yet. Add one using the form on the right.
               </div>
             )}
           </div>
@@ -1644,14 +1637,14 @@ export default function DashboardAdmin() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                {editingAnnId ? "Edit Pengumuman" : "Tambah Pengumuman"}
+                {editingAnnId ? "Edit Announcement" : "Add Announcement"}
               </div>
               <div className="h-[1px] w-16 bg-gradient-to-r from-amber-500 to-transparent" />
             </div>
 
             <div>
               <label className="text-amber-100/80 text-[11px] font-tech">
-                JUDUL
+                Title
               </label>
               <input
                 type="text"
@@ -1666,13 +1659,13 @@ export default function DashboardAdmin() {
                 }
               />
               <p className="mt-1 text-[10px] text-amber-100/60 text-right">
-                {newAnn.title.length}/{ANNOUNCEMENT_TITLE_MAX} karakter
+                {newAnn.title.length}/{ANNOUNCEMENT_TITLE_MAX} characters
               </p>
             </div>
 
             <div>
               <label className="text-amber-100/80 text-[11px] font-tech">
-                ISI PENGUMUMAN
+                Announcement Content
               </label>
               <textarea
                 className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none min-h-[90px]"
@@ -1686,7 +1679,7 @@ export default function DashboardAdmin() {
                 }
               />
               <p className="mt-1 text-[10px] text-amber-100/60 text-right">
-                {newAnn.content.length}/{ANNOUNCEMENT_CONTENT_MAX} karakter
+                {newAnn.content.length}/{ANNOUNCEMENT_CONTENT_MAX} characters
               </p>
             </div>
 
@@ -1697,10 +1690,10 @@ export default function DashboardAdmin() {
                 className="rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech tracking-[0.25em] text-[#2b190b] hover:bg-amber-300 disabled:opacity-60 uppercase shadow-[0_0_20px_rgba(251,191,36,0.5)]"
               >
                 {loadingAnn
-                  ? "MENYIMPAN..."
+                  ? "SAVING..."
                   : editingAnnId
-                  ? "UPDATE PENGUMUMAN"
-                  : "SIMPAN PENGUMUMAN"}
+                  ? "UPDATE ANNOUNCEMENT"
+                  : "Save Announcement"}
               </button>
               {editingAnnId && (
                 <button
@@ -1708,7 +1701,7 @@ export default function DashboardAdmin() {
                   onClick={handleCancelAnnouncement}
                   className="rounded-xl border border-amber-500/70 px-4 py-1.5 text-[11px] font-tech tracking-[0.25em] text-amber-200 hover:bg-amber-500/10"
                 >
-                  BATAL
+                  CANCEL
                 </button>
               )}
             </div>
@@ -1726,7 +1719,7 @@ export default function DashboardAdmin() {
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                Daftar Barber ({barbers.length})
+                Barber List ({barbers.length})
               </div>
             </div>
           </div>
@@ -1745,7 +1738,7 @@ export default function DashboardAdmin() {
                     User: {b.user?.name} ({b.user?.email})
                   </div>
                   <div className="text-amber-100/70 text-[11px]">
-                    {b.skill_level || "Skill level belum diisi"} ·{" "}
+                    {b.skill_level || "Skill level not set"} {" "}
                     <span className="text-amber-300">
                       Rp{" "}
                       {Number(b.base_price || 0).toLocaleString("id-ID")}
@@ -1765,14 +1758,14 @@ export default function DashboardAdmin() {
                     onClick={() => handleDeleteBarber(b.id)}
                     className="text-[11px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                   >
-                    HAPUS
+                    DELETE
                   </button>
                 </div>
               </div>
             ))}
             {!barbers.length && (
               <div className="text-amber-100/75 font-modern">
-                Belum ada barber.
+                No barbers yet.
               </div>
             )}
           </div>
@@ -1788,11 +1781,11 @@ export default function DashboardAdmin() {
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                {editingBarberId ? "Edit Barber" : "Tambah Barber Baru"}
+                {editingBarberId ? "Edit Barber" : "Add New Barber"}
               </div>
               {editingBarberId && (
                 <div className="mt-1 text-[11px] text-amber-100/80 font-modern">
-                  Mengubah display name, level, atau base price. Tekan batal untuk kembali menambah barber baru.
+                  Edit display name, level, or base price. Press CANCEL to return to adding a new barber.
                 </div>
               )}
             </div>
@@ -1803,7 +1796,7 @@ export default function DashboardAdmin() {
                   onClick={handleCancelBarber}
                   className="rounded-lg border border-amber-400/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-200 hover:bg-amber-400/10"
                 >
-                  BATAL
+                  CANCEL
                 </button>
               )}
               <div className="h-[1px] w-12 bg-gradient-to-r from-amber-500 to-transparent" />
@@ -1812,7 +1805,7 @@ export default function DashboardAdmin() {
           <div className="grid grid-cols-1 gap-2">
             <div>
               <label className="text-[11px] text-amber-100/80 font-tech">
-                NAMA USER (LOGIN)
+                USER NAME (LOGIN)
               </label>
               <input
                 className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none font-modern tracking-wide"
@@ -1820,7 +1813,7 @@ export default function DashboardAdmin() {
                 maxLength={BARBER_NAME_MAX}
                 disabled={!!editingBarberId}
                 onChange={(e) => {
-                  // hanya huruf A-Z / a-z + spasi
+                  // Letters A-Z / a-z plus spaces
                   let value = e.target.value.replace(/[^A-Za-z ]/g, "");
                   if (value.length > BARBER_NAME_MAX) {
                     value = value.slice(0, BARBER_NAME_MAX);
@@ -1841,7 +1834,7 @@ export default function DashboardAdmin() {
                   maxLength={BARBER_EMAIL_MAX}
                   disabled={!!editingBarberId}
                   onChange={(e) => {
-                    // paksa lowercase + hanya karakter yang diizinkan
+                    // Force lowercase; allow only permitted characters
                     let value = e.target.value.toLowerCase();
                     value = value.replace(/[^a-z0-9@._-]/g, "");
                     if (value.length > BARBER_EMAIL_MAX) {
@@ -1863,7 +1856,7 @@ export default function DashboardAdmin() {
                     maxLength={BARBER_PHONE_MAX}
                     disabled={!!editingBarberId}
                     onChange={(e) => {
-                      // hanya angka 0-9, maksimal 16 digit
+                      // Digits only, maximum 16 characters
                       let value = e.target.value.replace(/\D/g, "");
                       if (value.length > BARBER_PHONE_MAX) {
                         value = value.slice(0, BARBER_PHONE_MAX);
@@ -1897,7 +1890,7 @@ export default function DashboardAdmin() {
                   value={newBarber.display_name}
                   maxLength={BARBER_DISPLAY_MAX}
                   onChange={(e) => {
-                    // hanya huruf A-Z / a-z + spasi
+                    // Letters A-Z / a-z plus spaces
                     let value = e.target.value.replace(/[^A-Za-z ]/g, "");
                     if (value.length > BARBER_DISPLAY_MAX) {
                       value = value.slice(0, BARBER_DISPLAY_MAX);
@@ -1914,7 +1907,7 @@ export default function DashboardAdmin() {
               <label className="text-[11px] text-amber-100/80 font-tech">
                 SKILL LEVEL
               </label>
-              {/* ⬅️ sekarang pakai select tingkatan barber */}
+              {/*  use select for barber level */}
               <select
                 className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none font-modern tracking-wide"
                 value={newBarber.skill_level}
@@ -1925,7 +1918,7 @@ export default function DashboardAdmin() {
                   }))
                 }
               >
-                <option value="">Pilih level</option>
+                <option value="">Select level</option>
                 <option value="TOP RATED">TOP RATED</option>
                 <option value="Senior Barber">Senior Barber</option>
                 <option value="Barber">Barber</option>
@@ -1943,7 +1936,7 @@ export default function DashboardAdmin() {
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none font-modern tracking-wide"
                   value={newBarber.base_price}
                   onChange={(e) => {
-                    // hanya angka 0-9, tanpa titik/koma/spasi
+                    // Keep only numeric characters (0-9)
                     let value = e.target.value.replace(/\D/g, "");
                     setNewBarber((p) => ({
                       ...p,
@@ -1958,7 +1951,7 @@ export default function DashboardAdmin() {
               type="submit"
               className="rounded-xl bg-emerald-500 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#061308] hover:bg-emerald-400 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(16,185,129,0.55)]"
             >
-              {editingBarberId ? "UPDATE BARBER" : "SIMPAN BARBER"}
+              {editingBarberId ? "UPDATE BARBER" : "SAVE BARBER"}
             </button>
             {editingBarberId && (
               <button
@@ -1966,7 +1959,7 @@ export default function DashboardAdmin() {
                 onClick={handleCancelBarber}
                 className="rounded-xl border border-amber-400/70 px-4 py-1.5 text-[11px] font-tech font-semibold text-amber-200 hover:bg-amber-400/10 tracking-[0.18em] uppercase"
               >
-                BATAL EDIT
+                CANCEL EDIT
               </button>
             )}
           </div>
@@ -1983,7 +1976,7 @@ export default function DashboardAdmin() {
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                Daftar Pelanggan ({customers.length})
+                Customer List ({customers.length})
               </div>
             </div>
           </div>
@@ -1999,7 +1992,7 @@ export default function DashboardAdmin() {
                     {c.name}
                   </div>
                   <div className="text-amber-100/75 text-[11px]">
-                    {c.email} · {c.phone || "No. HP belum diisi"}
+                    {c.email}  {c.phone || "Phone not set"}
                   </div>
                   <div className="text-amber-100/70 text-[11px]">
                     ID: {c.id}
@@ -2018,14 +2011,14 @@ export default function DashboardAdmin() {
                     onClick={() => handleDeleteCustomer(c.id)}
                     className="h-fit text-[10px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                   >
-                    HAPUS
+                    DELETE
                   </button>
                 </div>
               </div>
             ))}
             {!customers.length && (
               <div className="text-amber-100/75 font-modern">
-                Belum ada customer.
+                No customers yet.
               </div>
             )}
           </div>
@@ -2041,11 +2034,11 @@ export default function DashboardAdmin() {
           <div className="flex items-start justify-between mb-2 gap-3">
             <div>
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                {editingCustomerId ? "Edit Customer" : "Tambah Customer"}
+                {editingCustomerId ? "Edit Customer" : "Add Customer"}
               </div>
               {editingCustomerId && (
                 <div className="mt-1 text-[11px] text-amber-100/80 font-modern">
-                  Hanya nama dan no. HP yang bisa diubah di sini. Tekan batal untuk kembali ke mode tambah.
+                  Only name and phone can be edited here. Press CANCEL to return to add mode.
                 </div>
               )}
             </div>
@@ -2056,7 +2049,7 @@ export default function DashboardAdmin() {
                   onClick={handleCancelCustomer}
                   className="rounded-lg border border-amber-400/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-200 hover:bg-amber-400/10"
                 >
-                  BATAL
+                  CANCEL
                 </button>
               )}
               <div className="h-[1px] w-12 bg-gradient-to-r from-amber-500 to-transparent" />
@@ -2066,14 +2059,14 @@ export default function DashboardAdmin() {
           <div className="grid grid-cols-1 gap-2">
             <div>
               <label className="text-[11px] text-amber-100/80 font-tech">
-                NAMA
+                NAME
               </label>
               <input
                 className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none font-modern tracking-wide"
                 value={newCustomer.name}
                 maxLength={CUSTOMER_NAME_MAX}
                 onChange={(e) => {
-                  // hanya huruf A-Z / a-z + spasi
+                  // Only letters A-Z and spaces
                   let value = e.target.value.replace(/[^A-Za-z ]/g, "");
                   if (value.length > CUSTOMER_NAME_MAX) {
                     value = value.slice(0, CUSTOMER_NAME_MAX);
@@ -2094,7 +2087,7 @@ export default function DashboardAdmin() {
                 maxLength={CUSTOMER_EMAIL_MAX}
                 disabled={!!editingCustomerId}
                 onChange={(e) => {
-                  // paksa lowercase, hanya a-z + @ + .
+                  // Force lowercase; allow a-z, @, and .
                   let value = e.target.value.toLowerCase();
                   value = value.replace(/[^a-z@.]/g, "");
                   if (value.length > CUSTOMER_EMAIL_MAX) {
@@ -2102,13 +2095,13 @@ export default function DashboardAdmin() {
                   }
                   setNewCustomer((p) => ({ ...p, email: value }));
                 }}
-                placeholder="contoh: johndoe@barber.com"
+                placeholder="example: johndoe@barber.com"
                 required={!editingCustomerId}
               />
             </div>
             <div>
               <label className="text-[11px] text-amber-100/80 font-tech">
-                NO. HP
+                PHONE
               </label>
               <input
                 className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none font-modern tracking-wide"
@@ -2116,7 +2109,7 @@ export default function DashboardAdmin() {
                 inputMode="numeric"
                 maxLength={CUSTOMER_PHONE_MAX}
                 onChange={(e) => {
-                  // hanya angka 0-9, maksimal 16 digit
+                  // Only digits, max 16 characters
                   let value = e.target.value.replace(/\D/g, "");
                   if (value.length > CUSTOMER_PHONE_MAX) {
                     value = value.slice(0, CUSTOMER_PHONE_MAX);
@@ -2151,7 +2144,7 @@ export default function DashboardAdmin() {
               type="submit"
               className="rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#2b190b] hover:bg-amber-300 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(251,191,36,0.55)]"
             >
-              {editingCustomerId ? "UPDATE CUSTOMER" : "SIMPAN CUSTOMER"}
+              {editingCustomerId ? "UPDATE CUSTOMER" : "SAVE CUSTOMER"}
             </button>
             {editingCustomerId && (
               <button
@@ -2159,7 +2152,7 @@ export default function DashboardAdmin() {
                 onClick={handleCancelCustomer}
                 className="rounded-xl border border-amber-400/70 px-4 py-1.5 text-[11px] font-tech font-semibold text-amber-200 hover:bg-amber-400/10 tracking-[0.18em] uppercase"
               >
-                BATAL EDIT
+                CANCEL EDIT
               </button>
             )}
           </div>
@@ -2173,13 +2166,13 @@ export default function DashboardAdmin() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="font-tech text-[10px] text-amber-500/90">
-            KONFIGURASI JAM OPERASIONAL
+            OPERATING HOURS CONFIGURATION
           </div>
           <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
             Business Hours
           </div>
           <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-            Atur jam buka/tutup per hari.
+            Configure opening/closing hours per day.
           </div>
         </div>
         <div className="flex gap-2">
@@ -2189,7 +2182,7 @@ export default function DashboardAdmin() {
             disabled={businessLoading}
             className="rounded-full border border-red-500/70 bg-red-500/10 px-3 py-1 text-[11px] font-tech tracking-[0.18em] text-red-200 hover:bg-red-500/20 disabled:opacity-60"
           >
-            TUTUP SEMENTARA
+            Temporarily closed
           </button>
           <button
             type="button"
@@ -2197,7 +2190,7 @@ export default function DashboardAdmin() {
             disabled={businessLoading}
             className="rounded-full border border-emerald-500/70 bg-emerald-500/10 px-3 py-1 text-[11px] font-tech tracking-[0.18em] text-emerald-200 hover:bg-emerald-500/20 disabled:opacity-60"
           >
-            BUKA 07:00–21:00
+            OPEN 07:0021:00
           </button>
         </div>
       </div>
@@ -2208,9 +2201,9 @@ export default function DashboardAdmin() {
           <table className="min-w-full text-[11px] font-modern">
             <thead>
               <tr className="text-amber-300/90 border-b border-amber-900/60">
-                <th className="text-left py-2 pr-3 font-normal">Hari</th>
-                <th className="text-left py-2 pr-3 font-normal">Buka</th>
-                <th className="text-left py-2 pr-3 font-normal">Tutup</th>
+                <th className="text-left py-2 pr-3 font-normal">Day</th>
+                <th className="text-left py-2 pr-3 font-normal">Open</th>
+                <th className="text-left py-2 pr-3 font-normal">Close</th>
                 <th className="text-left py-2 pr-3 font-normal">Closed</th>
                 <th className="text-left py-2 pr-3 font-normal">Override</th>
               </tr>
@@ -2222,7 +2215,9 @@ export default function DashboardAdmin() {
                   className="border-b border-amber-900/40 last:border-b-0"
                 >
                   <td className="py-2 pr-3 text-soft-gold">
-                    {dayNames[h.day_of_week] ?? `Hari ${h.day_of_week}`}
+                    {Number.isInteger(h.day_of_week) && dayNames[h.day_of_week]
+                      ? dayNames[h.day_of_week]
+                      : `Day ${h.day_of_week ?? "-"}`}
                   </td>
                   <td className="py-2 pr-3">
                     <input
@@ -2288,7 +2283,7 @@ export default function DashboardAdmin() {
                     colSpan={5}
                     className="py-3 text-amber-100/75 text-center"
                   >
-                    Belum ada konfigurasi jam buka.
+                    No business hours configured yet.
                   </td>
                 </tr>
               )}
@@ -2314,7 +2309,7 @@ export default function DashboardAdmin() {
           Payments
         </div>
         <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-          Daftar pembayaran dari gateway (Midtrans).
+          Payment records from the Midtrans gateway.
         </div>
       </div>
 
@@ -2331,7 +2326,7 @@ export default function DashboardAdmin() {
                 <th className="text-left py-2 pr-3 font-normal">Status</th>
                 <th className="text-left py-2 pr-3 font-normal">Amount</th>
                 <th className="text-left py-2 pr-3 font-normal">Tipe</th>
-                <th className="text-left py-2 pr-3 font-normal">Waktu</th>
+                <th className="text-left py-2 pr-3 font-normal">Time</th>
                 <th className="text-left py-2 pr-3 font-normal">
                   Aksi
                 </th>
@@ -2361,9 +2356,7 @@ export default function DashboardAdmin() {
                   <td className="py-2 pr-3 text-amber-100/80">
                     {p.gross_amount || p.amount
                       ? "Rp " +
-                        Number(
-                          p.gross_amount || p.amount
-                        ).toLocaleString("id-ID")
+                        Number(p.gross_amount || p.amount).toLocaleString("id-ID")
                       : "-"}
                   </td>
                   <td className="py-2 pr-3 text-amber-100/80">
@@ -2386,7 +2379,7 @@ export default function DashboardAdmin() {
                         onClick={() => handleDeletePayment(p.id)}
                         className="rounded-full border border-red-500/70 bg-red-500/10 px-3 py-1 text-[10px] font-tech tracking-[0.18em] text-red-200 hover:bg-red-500/20"
                       >
-                        HAPUS
+                        DELETE
                       </button>
                     </div>
                   </td>
@@ -2398,7 +2391,7 @@ export default function DashboardAdmin() {
                     colSpan={7}
                     className="py-3 text-center text-amber-100/75"
                   >
-                    Belum ada data pembayaran.
+                    No payment data yet.
                   </td>
                 </tr>
               )}
@@ -2431,8 +2424,8 @@ export default function DashboardAdmin() {
                     </div>
                     <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
                       {paymentDetail.midtrans_order_id ||
-                        paymentDetail.booking?.code ||
-                        "Detail Pembayaran"}
+                        paymentDetail.booking.code ||
+                        "Payment Detail"}
                     </div>
                   </div>
                   <button
@@ -2513,14 +2506,14 @@ export default function DashboardAdmin() {
                           onClick={handleUpdatePayment}
                           className="rounded-lg bg-emerald-500 px-3 py-1.5 text-[10px] font-tech tracking-[0.18em] text-[#061308] hover:bg-emerald-400"
                         >
-                          SIMPAN PERUBAHAN
+                          SAVE CHANGES
                         </button>
                         <button
                           type="button"
                           onClick={handleClosePaymentModal}
                           className="rounded-lg border border-amber-500/60 px-3 py-1.5 text-[10px] font-tech text-amber-200 hover:bg-amber-500/10"
                         >
-                          BATAL
+                          CANCEL
                         </button>
                       </div>
                     </div>
@@ -2546,13 +2539,13 @@ export default function DashboardAdmin() {
           <div className="font-tech text-[10px] text-amber-500/90">
             KEAMANAN & AUDIT
           </div>
-          <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-            Access Logs ({accessLogs.length})
-          </div>
-          <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-            Daftar akses login / aktivitas penting, termasuk IP dan user agent.
-          </div>
+        <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
+          Access Logs ({accessLogs.length})
         </div>
+        <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
+          Login access and key activity list, including IP and user agent.
+        </div>
+      </div>
         <div className="flex gap-2">
           <button
             type="button"
@@ -2566,7 +2559,7 @@ export default function DashboardAdmin() {
             onClick={handleClearAccessLogs}
             className="rounded-lg border border-red-500/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-red-200 hover:bg-red-500/10"
           >
-            HAPUS SEMUA
+            DELETE ALL
           </button>
         </div>
       </div>
@@ -2595,12 +2588,12 @@ export default function DashboardAdmin() {
                     onClick={() => handleDeleteAccessLog(log.id)}
                     className="rounded-lg border border-red-500/70 px-2 py-1 text-[10px] font-tech tracking-[0.18em] text-red-300 hover:bg-red-500/10"
                   >
-                    HAPUS
+                    DELETE
                   </button>
                 </div>
               </div>
               <div className="text-[10px] text-amber-100/70 mt-0.5">
-                {log.method || "-"} · {log.path || "-"}
+                {log.method || "-"}  {log.path || "-"}
               </div>
               <div className="text-[11px] text-amber-100/80">
                 IP: {log.ip_address || "-"}
@@ -2612,7 +2605,7 @@ export default function DashboardAdmin() {
           ))}
           {!accessLogs.length && (
             <div className="text-amber-100/75 font-modern">
-              Belum ada log akses.
+              No access logs yet.
             </div>
           )}
         </div>
@@ -2624,13 +2617,13 @@ export default function DashboardAdmin() {
     <section className="space-y-4 text-xs">
       <div>
         <div className="font-tech text-[10px] text-amber-500/90">
-          KATALOG LAYANAN
+          SERVICE CATALOG
         </div>
         <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
           Catalog
         </div>
         <div className="text-[11px] text-amber-100/75 font-modern max-w-3xl">
-          Atur layanan, gaya rambut, kupon, dan promo dari satu tempat.
+          Manage services, hairstyles, coupons, and promos from one place.
         </div>
       </div>
 
@@ -2658,11 +2651,11 @@ export default function DashboardAdmin() {
                       {s.description}
                     </div>
                     <div className="text-[11px] text-amber-100/80 mt-1">
-                      Durasi:{" "}
+                      Duration:{" "}
                       <span className="text-amber-300">
-                        {s.duration_minutes} menit
+                        {s.duration_minutes} minutes
                       </span>{" "}
-                      · Harga:{" "}
+                      Price:{" "}
                       <span className="text-emerald-300">
                         Rp{" "}
                         {Number(s.base_price || 0).toLocaleString("id-ID")}
@@ -2687,14 +2680,14 @@ export default function DashboardAdmin() {
                       onClick={() => handleDeleteService(s.id)}
                       className="h-fit text-[10px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                     >
-                      HAPUS
+                      DELETE
                     </button>
                   </div>
                 </div>
               ))}
               {!services.length && (
                 <div className="text-amber-100/75 font-modern">
-                  Belum ada service terdaftar.
+                  No services registered yet.
                 </div>
               )}
             </div>
@@ -2710,11 +2703,11 @@ export default function DashboardAdmin() {
             <div className="flex items-start justify-between mb-2 gap-3">
               <div>
                 <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                  {editingServiceId ? "Edit Service" : "Tambah Service"}
+                  {editingServiceId ? "Edit Service" : "Add Service"}
                 </div>
                 {editingServiceId && (
                   <div className="mt-1 text-[11px] text-amber-100/80 font-modern">
-                    Ubah nama, deskripsi, harga, durasi, atau bundle. Tekan batal untuk kembali ke mode tambah.
+                    Edit name, description, price, duration, or bundle. Press CANCEL to return to add mode.
                   </div>
                 )}
               </div>
@@ -2725,7 +2718,7 @@ export default function DashboardAdmin() {
                     onClick={handleCancelService}
                     className="rounded-lg border border-amber-400/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-200 hover:bg-amber-400/10"
                   >
-                    BATAL
+                    CANCEL
                   </button>
                 )}
                 <div className="h-[1px] w-12 bg-gradient-to-r from-amber-500 to-transparent" />
@@ -2734,7 +2727,7 @@ export default function DashboardAdmin() {
             <div className="grid grid-cols-1 gap-2">
               <div>
                 <label className="text-[11px] text-amber-100/80 font-tech">
-                  NAMA
+                  NAME
                 </label>
                 <input
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none"
@@ -2752,7 +2745,7 @@ export default function DashboardAdmin() {
               </div>
               <div>
                 <label className="text-[11px] text-amber-100/80 font-tech">
-                  DESKRIPSI
+                  DESCRIPTION
                 </label>
                 <textarea
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none min-h-[60px]"
@@ -2770,14 +2763,14 @@ export default function DashboardAdmin() {
                   }}
                 />
                 <p className="mt-1 text-[10px] text-amber-100/60 text-right">
-                  {newService.description.length}/{CATALOG_DESC_MAX} karakter
+                  {newService.description.length}/{CATALOG_DESC_MAX} characters
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {/* HARGA */}
+                {/* PRICE */}
                 <div>
                   <label className="text-[11px] text-amber-100/80 font-tech">
-                    HARGA (RP)
+                    PRICE (IDR)
                   </label>
                   <input
                     type="text"
@@ -2785,20 +2778,20 @@ export default function DashboardAdmin() {
                     className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none"
                     value={newService.base_price}
                     onChange={(e) => {
-                      // hanya angka 0-9
+                      // Digits only
                       let value = e.target.value.replace(/\D/g, "");
                       setNewService((p) => ({
                         ...p,
                         base_price: value,
                       }));
                     }}
-                    placeholder="contoh: 75000"
+                    placeholder="example: 75000"
                     required
                   />
                 </div>
                 <div>
                   <label className="text-[11px] text-amber-100/80 font-tech">
-                    DURASI (MENIT)
+                    DURATION (MINUTES)
                   </label>
                   <input
                     type="text"
@@ -2814,11 +2807,11 @@ export default function DashboardAdmin() {
                         duration_minutes: value,
                       }));
                     }}
-                    placeholder="1–180"
+                    placeholder="1180"
                     required
                   />
                   <p className="mt-1 text-[10px] text-amber-100/60">
-                    Minimal 1 menit, maksimal 180 menit.
+                    Minimum 1 minute, maximum 180 minutes.
                   </p>
                 </div>
               </div>
@@ -2833,7 +2826,7 @@ export default function DashboardAdmin() {
                     }))
                   }
                 />
-                <span>Jadikan paket / bundle</span>
+                <span>Mark as bundle</span>
               </div>
             </div>
             <div className="mt-2 flex gap-2">
@@ -2841,7 +2834,7 @@ export default function DashboardAdmin() {
                 type="submit"
                 className="rounded-xl bg-emerald-500 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#061308] hover:bg-emerald-400 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(16,185,129,0.55)]"
               >
-                {editingServiceId ? "UPDATE SERVICE" : "SIMPAN SERVICE"}
+                {editingServiceId ? "UPDATE SERVICE" : "SAVE SERVICE"}
               </button>
               {editingServiceId && (
                 <button
@@ -2849,7 +2842,7 @@ export default function DashboardAdmin() {
                   onClick={handleCancelService}
                   className="rounded-xl border border-amber-400/70 px-4 py-1.5 text-[11px] font-tech font-semibold text-amber-200 hover:bg-amber-400/10 tracking-[0.18em] uppercase"
                 >
-                  BATAL EDIT
+                  CANCEL EDIT
                 </button>
               )}
             </div>
@@ -2886,10 +2879,10 @@ export default function DashboardAdmin() {
                     <div className="flex justify-between gap-2">
                       <div>
                         <div className="font-modern text-soft-gold text-[11px] font-semibold">
-                          {h.name}
+                          {h.name || `Hairstyle #${h.id}`}
                         </div>
                         <div className="text-[11px] text-amber-100/75">
-                          {h.description}
+                          {h.description || "No description"}
                         </div>
                         <div className="text-[11px] text-amber-100/80 mt-1">
                           Service:{" "}
@@ -2913,7 +2906,7 @@ export default function DashboardAdmin() {
                           onClick={() => handleDeleteHairstyle(h.id)}
                           className="h-fit text-[10px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                         >
-                          HAPUS
+                          DELETE
                         </button>
                       </div>
                     </div>
@@ -2922,7 +2915,7 @@ export default function DashboardAdmin() {
               ))}
               {!hairstyles.length && (
                 <div className="text-amber-100/75 font-modern">
-                  Belum ada hairstyle terdaftar.
+                  No hairstyles registered yet.
                 </div>
               )}
             </div>
@@ -2938,11 +2931,11 @@ export default function DashboardAdmin() {
             <div className="flex items-start justify-between mb-2 gap-3">
               <div>
                 <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
-                  {editingHairstyleId ? "Edit Hairstyle" : "Tambah Hairstyle"}
+                  {editingHairstyleId ? "Edit Hairstyle" : "Add Hairstyle"}
                 </div>
                 {editingHairstyleId && (
                   <div className="mt-1 text-[11px] text-amber-100/80 font-modern">
-                    Ubah nama, deskripsi, gambar, atau service default. Tekan batal untuk kembali ke mode tambah.
+                    Edit name, description, image, or default service. Press CANCEL to return to add mode.
                   </div>
                 )}
               </div>
@@ -2953,17 +2946,17 @@ export default function DashboardAdmin() {
                     onClick={handleCancelHairstyle}
                     className="rounded-lg border border-amber-400/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-200 hover:bg-amber-400/10"
                   >
-                    BATAL
+                    CANCEL
                   </button>
                 )}
                 <div className="h-[1px] w-12 bg-gradient-to-r from-amber-500 to-transparent" />
               </div>
             </div>
             <div className="grid grid-cols-1 gap-2">
-              {/* NAMA */}
+              {/* NAME */}
               <div>
                 <label className="text-[11px] text-amber-100/80 font-tech">
-                  NAMA
+                  NAME
                 </label>
                 <input
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none"
@@ -2997,10 +2990,10 @@ export default function DashboardAdmin() {
                 />
               </div>
 
-              {/* DESKRIPSI */}
+              {/* DESCRIPTION */}
               <div>
                 <label className="text-[11px] text-amber-100/80 font-tech">
-                  DESKRIPSI
+                  DESCRIPTION
                 </label>
                 <textarea
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 text-xs text-soft-gold border border-amber-900/70 focus:border-amber-400 outline-none min-h-[60px]"
@@ -3018,7 +3011,7 @@ export default function DashboardAdmin() {
                   }}
                 />
                 <p className="mt-1 text-[10px] text-amber-100/60 text-right">
-                  {newHairstyle.description.length}/{CATALOG_DESC_MAX} karakter
+                  {newHairstyle.description.length}/{CATALOG_DESC_MAX} characters
                 </p>
               </div>
 
@@ -3037,7 +3030,7 @@ export default function DashboardAdmin() {
                     }))
                   }
                 >
-                  <option value="">— Tidak ada (None) —</option>
+                  <option value=""> None </option>
                   {services.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.name} (ID: {s.id})
@@ -3047,19 +3040,19 @@ export default function DashboardAdmin() {
               </div>
             </div>
             <div className="mt-2 flex gap-2">
-              <button
-                type="submit"
-                className="rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#2b190b] hover:bg-amber-300 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(251,191,36,0.55)]"
-              >
-                {editingHairstyleId ? "UPDATE HAIRSTYLE" : "SIMPAN HAIRSTYLE"}
-              </button>
+            <button
+              type="submit"
+              className="rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#2b190b] hover:bg-amber-300 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(251,191,36,0.55)]"
+            >
+                {editingHairstyleId ? "UPDATE HAIRSTYLE" : "SAVE HAIRSTYLE"}
+            </button>
               {editingHairstyleId && (
                 <button
                   type="button"
                   onClick={handleCancelHairstyle}
                   className="rounded-xl border border-amber-400/70 px-4 py-1.5 text-[11px] font-tech font-semibold text-amber-200 hover:bg-amber-400/10 tracking-[0.18em] uppercase"
                 >
-                  BATAL EDIT
+                  CANCEL EDIT
                 </button>
               )}
             </div>
@@ -3099,19 +3092,19 @@ export default function DashboardAdmin() {
                             </span>
                           </>
                         ) : (
-                          <>User ID: {c.user_id || "-"}</>
+                          <>User ID: {c.user_id || "-"} </>
                         )}{" "}
-                        · Diskon:{" "}
+                        Discount:{" "}
                         <span className="text-emerald-300">
                           {c.discount_percent}%
                         </span>
                       </div>
-                      <div className="text-[10px] text-amber-100/70">
-                        Expires: {c.expires_at || "-"} · Reason:{" "}
-                        {c.issued_reason || "-"}
-                      </div>
+                    <div className="text-[10px] text-amber-100/70">
+                      Expires: {c.expires_at || "-"}  Reason:{" "}
+                      {c.issued_reason || "-"}
                     </div>
-                    <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-2">
+                  </div>
+                  <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-2">
                       <button
                         type="button"
                         onClick={() => handleEditCoupon(c)}
@@ -3124,7 +3117,7 @@ export default function DashboardAdmin() {
                         onClick={() => handleDeleteCoupon(c.id)}
                         className="h-fit text-[10px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                       >
-                        HAPUS
+                        DELETE
                       </button>
                     </div>
                   </div>
@@ -3132,7 +3125,7 @@ export default function DashboardAdmin() {
               })}
               {!coupons.length && (
                 <div className="text-amber-100/75 font-modern">
-                  Belum ada coupon.
+                  No coupons yet.
                 </div>
               )}
             </div>
@@ -3144,11 +3137,11 @@ export default function DashboardAdmin() {
               <div className="flex items-start justify-between gap-3 mb-1">
                 <div>
                   <div className="font-modern text-amber-200/90 text-[11px]">
-                    {editingCouponId ? "Edit Coupon" : "Tambah Coupon"}
+                    {editingCouponId ? "Edit Coupon" : "Add Coupon"}
                   </div>
                   {editingCouponId && (
                     <div className="text-amber-100/80 text-[10px]">
-                      Ubah kode, diskon, masa berlaku, atau customer. Tekan batal untuk kembali tambah.
+                      Edit code, discount, validity, or customer. Press CANCEL to return to add mode.
                     </div>
                   )}
                 </div>
@@ -3158,7 +3151,7 @@ export default function DashboardAdmin() {
                     onClick={handleCancelCoupon}
                     className="rounded-lg border border-amber-400/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-200 hover:bg-amber-400/10"
                   >
-                    BATAL
+                    CANCEL
                   </button>
                 )}
               </div>
@@ -3179,7 +3172,7 @@ export default function DashboardAdmin() {
                     }
                     required
                   >
-                    <option value="">-- pilih customer --</option>
+                    <option value="">-- select customer --</option>
                     {customers.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name} ({c.email})
@@ -3205,20 +3198,20 @@ export default function DashboardAdmin() {
                       }
                       setNewCoupon((p) => ({ ...p, code: value }));
                     }}
-                    placeholder="contoh: 123456"
+                    placeholder="example: 123456"
                     required
                   />
                   <p className="mt-1 text-[10px] text-amber-100/60">
-                    Hanya angka 0-9, maksimal {COUPON_CODE_MAX} karakter.
+                    Digits only, max {COUPON_CODE_MAX} characters.
                   </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                {/* DISKON */}
+                {/* DISCOUNT */}
                 <div>
                   <label className="text-amber-100/80 font-tech">
-                    DISKON (%)
+                    DISCOUNT (%)
                   </label>
                   <input
                     type="text"
@@ -3233,7 +3226,7 @@ export default function DashboardAdmin() {
                         discount_percent: value,
                       }));
                     }}
-                    placeholder="0–100"
+                    placeholder="0100"
                     required
                   />
                 </div>
@@ -3279,23 +3272,23 @@ export default function DashboardAdmin() {
                   }}
                 />
                 <p className="mt-1 text-[10px] text-amber-100/60 text-right">
-                  {newCoupon.issued_reason.length}/{COUPON_REASON_MAX} karakter
+                  {newCoupon.issued_reason.length}/{COUPON_REASON_MAX} characters
                 </p>
               </div>
 
-              <button
-                type="submit"
-                className="mt-1 rounded-xl bg-emerald-500 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#061308] hover:bg-emerald-400 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(16,185,129,0.55)]"
-              >
-                {editingCouponId ? "UPDATE COUPON" : "SIMPAN COUPON"}
-              </button>
+            <button
+              type="submit"
+              className="mt-1 rounded-xl bg-emerald-500 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#061308] hover:bg-emerald-400 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(16,185,129,0.55)]"
+            >
+                {editingCouponId ? "UPDATE COUPON" : "SAVE COUPON"}
+            </button>
               {editingCouponId && (
                 <button
                   type="button"
                   onClick={handleCancelCoupon}
                   className="rounded-xl border border-amber-400/70 px-4 py-1.5 text-[11px] font-tech font-semibold text-amber-200 hover:bg-amber-400/10 tracking-[0.18em] uppercase"
                 >
-                  BATAL EDIT
+                  CANCEL EDIT
                 </button>
               )}
             </form>
@@ -3325,22 +3318,22 @@ export default function DashboardAdmin() {
                       {p.description}
                     </div>
                     <div className="text-[11px] text-amber-100/80 mt-1">
-                      Diskon:{" "}
+                      Discount:{" "}
                       <span className="text-emerald-300">
                         {p.discount_percent}%
                       </span>{" "}
-                      · Day:{" "}
+                      Day:{" "}
                       <span className="text-amber-300">
                         {p.day_of_week != null
                           ? dayNames[p.day_of_week]
-                          : "Semua hari"}
+                          : "All days"}
                       </span>{" "}
-                      · Service ID: {p.service_id || "-"}
+                       Service ID: {p.service_id || "-"}
                     </div>
                     <div className="text-[10px] text-amber-100/70 mt-1">
                       Status:{" "}
                       <span className="text-amber-200">
-                        {p.is_active ? "Aktif" : "Nonaktif"}
+                        {p.is_active ? "Active" : "Inactive"}
                       </span>
                     </div>
                   </div>
@@ -3357,14 +3350,14 @@ export default function DashboardAdmin() {
                       onClick={() => handleDeletePromo(p.id)}
                       className="h-fit text-[10px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                     >
-                      HAPUS
+                      DELETE
                     </button>
                   </div>
                 </div>
               ))}
               {!promos.length && (
                 <div className="text-amber-100/75 font-modern">
-                  Belum ada promo.
+                  No promos yet.
                 </div>
               )}
             </div>
@@ -3376,11 +3369,11 @@ export default function DashboardAdmin() {
               <div className="flex items-start justify-between gap-3 mb-1">
                 <div>
                   <div className="font-modern text-amber-200/90 text-[11px]">
-                    {editingPromoId ? "Edit Promo" : "Tambah Promo"}
+                    {editingPromoId ? "Edit Promo" : "Add Promo"}
                   </div>
                   {editingPromoId && (
                     <div className="text-amber-100/80 text-[10px]">
-                      Ubah nama, deskripsi, diskon, hari, service, atau status. Tekan batal untuk kembali tambah.
+                      Edit name, description, discount, days, service, or status. Press CANCEL to return to add mode.
                     </div>
                   )}
                 </div>
@@ -3390,15 +3383,15 @@ export default function DashboardAdmin() {
                     onClick={handleCancelPromo}
                     className="rounded-lg border border-amber-400/70 px-3 py-1 text-[10px] font-tech tracking-[0.2em] text-amber-200 hover:bg-amber-400/10"
                   >
-                    BATAL
+                    CANCEL
                   </button>
                 )}
               </div>
 
-              {/* NAMA */}
+              {/* NAME */}
               <div>
                 <label className="text-amber-100/80 font-tech">
-                  NAMA
+                  NAME
                 </label>
                 <input
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-2 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none"
@@ -3415,10 +3408,10 @@ export default function DashboardAdmin() {
                 />
               </div>
 
-              {/* DESKRIPSI */}
+              {/* DESCRIPTION */}
               <div>
                 <label className="text-amber-100/80 font-tech">
-                  DESKRIPSI
+                  DESCRIPTION
                 </label>
                 <textarea
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-2 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none min-h-[60px]"
@@ -3436,15 +3429,15 @@ export default function DashboardAdmin() {
                   }}
                 />
                 <p className="mt-1 text-[10px] text-amber-100/60 text-right">
-                  {newPromo.description.length}/{CATALOG_DESC_MAX} karakter
+                  {newPromo.description.length}/{CATALOG_DESC_MAX} characters
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                {/* DISKON */}
+                {/* DISCOUNT */}
                 <div>
                   <label className="text-amber-100/80 font-tech">
-                    DISKON (%)
+                    DISCOUNT (%)
                   </label>
                   <input
                     type="text"
@@ -3459,7 +3452,7 @@ export default function DashboardAdmin() {
                         discount_percent: value,
                       }));
                     }}
-                    placeholder="0–100"
+                    placeholder="0100"
                     required
                   />
                 </div>
@@ -3479,7 +3472,7 @@ export default function DashboardAdmin() {
                       }))
                     }
                   >
-                    <option value="">Semua</option>
+                  <option value="">All</option>
                     {dayNames.map((d, idx) => (
                       <option key={idx} value={idx}>
                         {d}
@@ -3504,7 +3497,7 @@ export default function DashboardAdmin() {
                     }))
                   }
                 >
-                  <option value="">— Berlaku untuk semua service —</option>
+                  <option value=""> Applies to all services </option>
                   {services.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.name} (ID: {s.id})
@@ -3524,14 +3517,14 @@ export default function DashboardAdmin() {
                     }))
                   }
                 />
-                <span>Aktif</span>
+                <span>Active</span>
               </div>
 
               <button
                 type="submit"
                 className="mt-1 rounded-xl bg-amber-400 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#2b190b] hover:bg-amber-300 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(251,191,36,0.55)]"
               >
-                {editingPromoId ? "UPDATE PROMO" : "SIMPAN PROMO"}
+                {editingPromoId ? "UPDATE PROMO" : "SAVE PROMO"}
               </button>
               {editingPromoId && (
                 <button
@@ -3539,7 +3532,7 @@ export default function DashboardAdmin() {
                   onClick={handleCancelPromo}
                   className="rounded-xl border border-amber-400/70 px-4 py-1.5 text-[11px] font-tech font-semibold text-amber-200 hover:bg-amber-400/10 tracking-[0.18em] uppercase"
                 >
-                  BATAL EDIT
+                  CANCEL EDIT
                 </button>
               )}
             </form>
@@ -3564,9 +3557,9 @@ export default function DashboardAdmin() {
               >
                 <div>
                   <div className="font-modern text-soft-gold">
-                    {r.customer?.name || "Customer"} →{" "}
+                    {r.customer.name || "Customer"} {" "}
                     <span className="text-amber-300">
-                      {r.barber?.display_name || "Barber"}
+                      {r.barber.display_name || "Barber"}
                     </span>
                   </div>
                   <div className="text-amber-100/75 mt-0.5">
@@ -3582,13 +3575,13 @@ export default function DashboardAdmin() {
                   onClick={() => handleDeleteReview(r.id)}
                   className="h-fit text-[10px] rounded-lg border border-red-500/70 px-2 py-1 text-red-300 hover:bg-red-500/10 font-tech tracking-[0.18em]"
                 >
-                  HAPUS
+                  DELETE
                 </button>
               </div>
             ))}
             {!reviews.length && (
               <div className="text-amber-100/75 font-modern">
-                Belum ada review.
+                No reviews yet.
               </div>
             )}
           </div>
@@ -3607,7 +3600,7 @@ export default function DashboardAdmin() {
           Settings
         </div>
         <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-          Ganti password akun admin dan atur reset password untuk user lain
+          Change the admin password and reset passwords for other users
           (barber / customer).
         </div>
       </div>
@@ -3621,7 +3614,7 @@ export default function DashboardAdmin() {
           <div className="absolute inset-0 opacity-[0.07] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
           <div className="relative z-10">
             <div className="font-vintage text-lg text-gold-gradient text-glow-gold mb-2">
-              Ganti Password Saya
+              Change My Password
             </div>
             <div className="grid grid-cols-1 gap-2 text-[11px]">
               <div>
@@ -3661,7 +3654,7 @@ export default function DashboardAdmin() {
               </div>
               <div>
                 <label className="text-amber-100/80 font-tech">
-                  KONFIRMASI NEW PASSWORD
+                  CONFIRM NEW PASSWORD
                 </label>
                   <input
                     type="password"
@@ -3701,14 +3694,14 @@ export default function DashboardAdmin() {
             <div className="grid grid-cols-1 gap-2 text-[11px]">
               <div>
                 <label className="text-amber-100/80 font-tech">
-                  PILIH USER
+                  SELECT USER
                 </label>
                 <select
                   className="mt-1 w-full rounded-lg bg-[#0b0705]/90 px-3 py-1.5 border border-amber-900/70 text-xs text-soft-gold focus:border-amber-400 outline-none"
                   value={targetUserId}
                   onChange={(e) => setTargetUserId(e.target.value)}
                 >
-                  <option value="">-- pilih user --</option>
+                  <option value="">-- select user --</option>
                   {allUsersForSettings.map((u) => (
                     <option key={u.id} value={u.id}>
                       [{u.role}] {u.name}
@@ -3729,15 +3722,15 @@ export default function DashboardAdmin() {
                     required
                   />
               </div>
-              <button
-                type="submit"
-                disabled={targetPasswordLoading}
-                className="mt-1 rounded-xl bg-emerald-500 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#061308] hover:bg-emerald-400 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(16,185,129,0.55)] disabled:opacity-60"
-              >
-                {targetPasswordLoading
-                  ? "UPDATING..."
-                  : "UPDATE PASSWORD USER"}
-              </button>
+            <button
+              type="submit"
+              disabled={targetPasswordLoading}
+              className="mt-1 rounded-xl bg-emerald-500 px-4 py-1.5 text-[11px] font-tech font-semibold text-[#061308] hover:bg-emerald-400 tracking-[0.18em] uppercase shadow-[0_0_20px_rgba(16,185,129,0.55)] disabled:opacity-60"
+            >
+              {targetPasswordLoading
+                ? "UPDATING..."
+                : "UPDATE PASSWORD USER"}
+            </button>
             </div>
           </div>
         </form>
@@ -3751,7 +3744,7 @@ export default function DashboardAdmin() {
       <div className="relative min-h-screen bg-[#181411] text-amber-50 flex flex-col overflow-hidden pt-16 font-modern">
         {/* --- CSS INJECTION --- */}
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+          @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
           
           .font-royal { 
             font-family: 'Cinzel', serif; 
@@ -3844,7 +3837,7 @@ export default function DashboardAdmin() {
             z-index: 0;
           }
 
-          /* CARD LUX – shimmer tetap di dalam box */
+          /* CARD LUX  shimmer tetap di dalam box */
           .card-lux {
             position: relative;
             transform-style: preserve-3d;
@@ -3974,7 +3967,7 @@ export default function DashboardAdmin() {
                 </span>
               </div>
               <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-                Panel kontrol untuk mengelola barbershop.
+                Control panel to manage the barbershop.
               </div>
             </div>
           </motion.div>
@@ -4053,7 +4046,7 @@ export default function DashboardAdmin() {
                   {activeTab === "payments" && renderPayments()}
                   {activeTab === "payouts" && (
                     <div className="mt-1">
-                      {/* barber list diteruskan ke payouts supaya id-barber nyambung */}
+                      {/* pass barber list to payouts so barber IDs align */}
                       <AdminPayouts barbers={barbers} />
                     </div>
                   )}

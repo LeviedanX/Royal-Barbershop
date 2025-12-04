@@ -50,10 +50,10 @@ const EmptyState = () => (
       <div className="absolute inset-0 rounded-full border border-amber-500/20 animate-ping opacity-20" />
     </div>
     <h3 className="relative z-10 font-serif text-xl font-bold tracking-widest text-stone-300">
-      KOLEKSI KOSONG
+      NO STYLES AVAILABLE
     </h3>
     <p className="relative z-10 mt-3 max-w-xs font-sans text-sm font-light leading-relaxed text-stone-500">
-      Belum ada referensi gaya rambut di etalase digital Anda.
+      No hairstyle references available in your digital showcase.
     </p>
     <div className="absolute bottom-[-50px] left-1/2 h-[100px] w-[300px] -translate-x-1/2 rounded-full bg-amber-600/10 blur-[60px]" />
   </div>
@@ -96,10 +96,12 @@ function HairstyleCard({ style, onSelect, selectedId }) {
   const isSelected =
     selectedId !== undefined && String(selectedId) === String(style.id);
 
-  // Mock data jika service details tidak ada
-  const duration = style.default_service?.duration || "30m";
-  const price = style.default_service?.price 
-    ? (style.default_service.price / 1000) + "k" 
+  // Fallback values when service details are missing
+  const defaultService = style.default_service || {};
+  const duration = defaultService.duration || "30m";
+  const priceValue = defaultService.price;
+  const price = priceValue
+    ? `${Math.round(priceValue / 1000)}k`
     : "Starts 40k";
 
   return (
@@ -115,7 +117,7 @@ function HairstyleCard({ style, onSelect, selectedId }) {
       {isSelected && (
         <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-1 rounded-full bg-emerald-600/90 px-2 py-[2px] text-[9px] font-semibold text-emerald-50 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
           <span className="h-1.5 w-1.5 rounded-full bg-white" />
-          Dipilih
+          Selected
         </div>
       )}
       {/* --- POLAROID SHADOW & STACK EFFECT --- */}

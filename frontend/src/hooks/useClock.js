@@ -9,24 +9,24 @@ export function useClock(intervalMs = 1000) {
     return () => clearInterval(id);
   }, [intervalMs]);
 
-  const hari = [
-    "Minggu",
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Jumat",
-    "Sabtu",
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
   ];
-  const dayName = hari[now.getDay()];
+  const dayName = days[now.getDay()];
 
-  const dateString = now.toLocaleDateString("id-ID", {
+  const dateString = now.toLocaleDateString("en-US", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
 
-  const timeString = now.toLocaleTimeString("id-ID", {
+  const timeString = now.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",

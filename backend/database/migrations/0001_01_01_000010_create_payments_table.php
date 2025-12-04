@@ -15,28 +15,28 @@ return new class extends Migration
                 ->constrained('bookings')
                 ->cascadeOnDelete();
 
-            // ORDER ID unik di Midtrans (BOOK-{booking_id}-{timestamp})
+            // Unique ORDER ID in Midtrans (BOOK-{booking_id}-{timestamp})
             $table->string('midtrans_order_id')->unique();
 
-            // Jenis pembayaran, misal: credit_card, gopay, qris, dll
+            // Payment type, e.g., credit_card, gopay, qris, etc.
             $table->string('payment_type')->nullable();
 
-            // Total yang dibayar
+            // Total amount paid
             $table->decimal('gross_amount', 10, 2);
 
-            // Status transaksi dari Midtrans: pending, capture, settlement, cancel, deny, expire, dll
+            // Transaction status from Midtrans: pending, capture, settlement, cancel, deny, expire, etc.
             $table->string('transaction_status')->default('pending');
 
-            // Waktu transaksi di Midtrans
+            // Transaction time from Midtrans
             $table->dateTime('transaction_time')->nullable();
 
-            // Status fraud (optional, dari Midtrans: accept / deny / challenge)
+            // Fraud status (optional, from Midtrans: accept / deny / challenge)
             $table->string('fraud_status')->nullable();
 
-            // Snap token yang dikirim ke frontend
+            // Snap token sent to the frontend
             $table->string('snap_token')->nullable();
 
-            // Simpan raw JSON callback / response Midtrans
+            // Store raw JSON callback/response from Midtrans
             $table->json('raw_response')->nullable();
 
             $table->timestamps();

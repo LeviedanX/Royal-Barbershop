@@ -29,7 +29,7 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->unsignedInteger('queue_number');
-            $table->date('booking_date'); // buat reset nomor antrian harian
+            $table->date('booking_date'); // used to reset daily queue numbers
             $table->dateTime('scheduled_at');
 
             $table->enum('status', ['waiting', 'in_progress', 'done', 'cancelled'])
@@ -49,7 +49,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            // Optional index untuk performa
+            // Optional index for performance
             $table->index(['booking_date', 'queue_number']);
         });
     }

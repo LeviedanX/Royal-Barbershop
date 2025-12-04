@@ -78,7 +78,7 @@ export default function AnnouncementBanner() {
     // pertama kali
     loadAnnouncements();
 
-    // polling tiap 10 detik
+    // poll every 10 seconds
     const intervalId = setInterval(loadAnnouncements, 10000);
 
     return () => {

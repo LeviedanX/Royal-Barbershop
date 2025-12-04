@@ -17,11 +17,11 @@ class Hairstyle extends Model
     ];
 
     /**
-     * Relasi yang dipakai AdminCatalogController:
+     * Relationship used by AdminCatalogController:
      * Hairstyle::with('defaultService')->get()
      *
-     * Di JSON akan muncul sebagai field "default_service"
-     * sehingga cocok dengan frontend yang pakai h.default_service?.name
+     * In JSON it appears as "default_service",
+     * matching frontend usage h.default_service?.name.
      */
     public function defaultService()
     {
@@ -29,8 +29,7 @@ class Hairstyle extends Model
     }
 
     /**
-     * Alias opsional kalau ada kode lain yang memanggil $hairstyle->service
-     * (misalnya sisa kode lama).
+     * Optional alias for legacy code that calls $hairstyle->service.
      */
     public function service()
     {

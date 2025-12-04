@@ -12,7 +12,7 @@ import RealtimeClock from "../components/ui/RealtimeClock";
 import AnnouncementBanner from "../components/ui/AnnouncementBanner";
 
 // ============================================================================
-//  VISUAL ATMOSFER (DIBUAT MIRIP DASHBOARD ADMIN)
+//  Visual atmosphere (mirrors the admin dashboard)
 // ============================================================================
 
 // 1. Slow Rising Gold Dust
@@ -138,11 +138,11 @@ function LuxuryPole3D() {
       groupRef.current.position.y = Math.sin(t * 1.1) * 0.1;
     }
 
-    if (poleRef.current?.material?.map) {
+    if (poleRef.current.material.map) {
       poleRef.current.material.map.offset.y -= delta * 0.25;
     }
 
-    if (glassRef.current?.material) {
+    if (glassRef.current.material) {
       const mat = glassRef.current.material;
       mat.opacity = 0.32 + Math.sin(t * 2.2) * 0.06;
       mat.emissive = new THREE.Color("#fefce8");
@@ -295,7 +295,7 @@ export default function DashboardBarber() {
     const fetchDashboard = async () => {
       try {
         setLoading(true);
-        // contoh endpoint – GANTI sesuai backendmu
+        // example endpoint - adjust to your backend
         const { data } = await http.get("/barber/dashboard");
         // asumsi bentuk data:
         // {
@@ -318,7 +318,7 @@ export default function DashboardBarber() {
     fetchDashboard();
   }, []);
 
-  // ====================== RENDER PANEL – MIRIP DASHBOARD ADMIN =================
+  // ====================== RENDER PANEL  MIRIP DASHBOARD ADMIN =================
 
   const renderOverview = () => (
     <section className="space-y-4 text-xs">
@@ -326,7 +326,7 @@ export default function DashboardBarber() {
 
       {/* cards ringkas status hari ini */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        {/* Antrian aktif */}
+        {/* Active queue */}
         <motion.div
           className="relative rounded-xl border border-amber-500/40 bg-gradient-to-br from-[#1b130f]/95 via-[#130d0a]/95 to-black/90 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.9)] overflow-hidden card-lux"
           initial={{ opacity: 0, y: 10 }}
@@ -337,7 +337,7 @@ export default function DashboardBarber() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-1">
               <div className="text-[10px] font-tech tracking-[0.25em] text-amber-300/90">
-                ANTRIAN HARI INI
+                TODAY'S QUEUE
               </div>
               <span className="h-[1px] w-8 bg-gradient-to-r from-amber-500 to-transparent" />
             </div>
@@ -358,7 +358,7 @@ export default function DashboardBarber() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-1">
               <div className="text-[10px] font-tech tracking-[0.25em] text-emerald-300/90">
-                PESANAN SELESAI
+                COMPLETED ORDERS
               </div>
             </div>
             <div className="font-modern text-emerald-300 text-2xl font-semibold text-glow-gold">
@@ -377,7 +377,7 @@ export default function DashboardBarber() {
           <div className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
           <div className="relative z-10">
             <div className="text-[10px] font-tech tracking-[0.25em] text-amber-300/90 mb-1">
-              TOTAL PENDAPATAN
+              TOTAL REVENUE
             </div>
             <div className="font-modern text-soft-gold text-xl font-semibold text-glow-gold">
               Rp{" "}
@@ -400,12 +400,12 @@ export default function DashboardBarber() {
             <div className="text-[10px] font-tech tracking-[0.25em] text-amber-300/90 mb-1">
               RATING
             </div>
-            <div className="flex items-baseline gap-1">
-              <div className="font-modern text-soft-gold text-2xl font-semibold text-glow-gold">
-                {stats.avgRating != null ? stats.avgRating.toFixed(1) : "-"}
+              <div className="flex items-baseline gap-1">
+                <div className="font-modern text-soft-gold text-2xl font-semibold text-glow-gold">
+                  {stats.avgRating != null ? stats.avgRating.toFixed(1) : "-"}
+                </div>
+                <span className="text-[11px] text-amber-200/80">/ 5.0</span>
               </div>
-              <span className="text-[11px] text-amber-200/80">/ 5.0</span>
-            </div>
           </div>
         </motion.div>
       </div>
@@ -417,7 +417,7 @@ export default function DashboardBarber() {
           <div className="flex items-center justify-between mb-3">
             <div>
               <div className="font-tech text-[10px] text-amber-500/90 tracking-[0.25em]">
-                TOTAL ANTRIAN
+                TOTAL QUEUE
               </div>
               <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
                 Queue Overview
@@ -436,13 +436,13 @@ export default function DashboardBarber() {
                     {b.customer_name || "Customer"}
                   </div>
                   <div className="text-amber-100/75">
-                    {b.service_name || "Service"} ·{" "}
+                    {b.service_name || "Service"} {" "}
                     <span className="text-amber-300">
                       {b.time_label || b.time || "-"}
                     </span>
                   </div>
                   <div className="text-amber-100/70 text-[10px] mt-0.5">
-                    Kode: {b.code || "-"} · No antrian:{" "}
+                    Code: {b.code || "-"}  Queue:{" "}
                     {b.queue_number ?? "-"}
                   </div>
                 </div>
@@ -460,7 +460,7 @@ export default function DashboardBarber() {
             ))}
             {!todayBookings.length && (
               <div className="text-amber-100/75 font-modern">
-                Belum ada antrian untukmu hari ini.
+                No queue entries for you today.
               </div>
             )}
           </div>
@@ -472,9 +472,7 @@ export default function DashboardBarber() {
   const renderQueue = () => (
     <section className="space-y-4 text-xs">
       <div>
-        <div className="font-tech text-[10px] text-amber-500/90">
-          ANTRIAN AKTIF
-        </div>
+        <div className="font-tech text-[10px] text-amber-500/90">ACTIVE QUEUE</div>
         <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
           My Queue
         </div>
@@ -490,14 +488,14 @@ export default function DashboardBarber() {
             >
               <div>
                 <div className="font-modern text-soft-gold text-[11px] font-semibold">
-                  #{b.queue_number ?? "-"} – {b.customer_name || "Customer"}
+                  #{b.queue_number ?? "-"}  {b.customer_name || "Customer"}
                 </div>
                 <div className="text-[11px] text-amber-100/80">
-                  {b.service_name || "Service"} ·{" "}
+                  {b.service_name || "Service"} {" "}
                   {b.time_label || b.time || "-"}
                 </div>
                 <div className="text-[10px] text-amber-100/70 mt-0.5">
-                  Code: {b.code || "-"} · Metode pembayaran:{" "}
+                  Code: {b.code || "-"}  Payment method:{" "}
                   {b.payment_type || "-"}
                 </div>
               </div>
@@ -515,7 +513,7 @@ export default function DashboardBarber() {
           ))}
           {!todayBookings.length && (
             <div className="text-amber-100/75 font-modern">
-              Tidak ada antrian aktif.
+              No active queue.
             </div>
           )}
         </div>
@@ -526,9 +524,7 @@ export default function DashboardBarber() {
   const renderHistory = () => (
     <section className="space-y-4 text-xs">
       <div>
-        <div className="font-tech text-[10px] text-amber-500/90">
-          RIWAYAT BOOKING
-        </div>
+        <div className="font-tech text-[10px] text-amber-500/90">BOOKING HISTORY</div>
         <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
           History
         </div>
@@ -540,7 +536,7 @@ export default function DashboardBarber() {
           <table className="min-w-full text-[11px] font-modern">
             <thead>
               <tr className="text-amber-300/90 border-b border-amber-900/60">
-                <th className="text-left py-2 pr-3 font-normal">Tanggal</th>
+                <th className="text-left py-2 pr-3 font-normal">Date</th>
                 <th className="text-left py-2 pr-3 font-normal">Customer</th>
                 <th className="text-left py-2 pr-3 font-normal">Service</th>
                 <th className="text-left py-2 pr-3 font-normal">Status</th>
@@ -581,7 +577,7 @@ export default function DashboardBarber() {
                     colSpan={5}
                     className="py-3 text-center text-amber-100/75"
                   >
-                    Belum ada riwayat booking.
+                    No booking history yet.
                   </td>
                 </tr>
               )}
@@ -634,7 +630,7 @@ export default function DashboardBarber() {
           ))}
           {!reviews.length && (
             <div className="text-amber-100/75 font-modern">
-              Belum ada review.
+              No reviews yet.
             </div>
           )}
         </div>
@@ -646,7 +642,7 @@ export default function DashboardBarber() {
     <section className="space-y-4 text-xs">
       <div>
         <div className="font-tech text-[10px] text-amber-500/90">
-          PROFIL BARBER
+          BARBER PROFILE
         </div>
         <div className="font-vintage text-lg text-gold-gradient text-glow-gold">
           My Profile
@@ -659,15 +655,15 @@ export default function DashboardBarber() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
             <div>
               <div className="font-modern text-soft-gold text-base">
-                {user?.name || "Barber"}
+                {user.name || "Barber"}
               </div>
               <div className="text-amber-100/75">
-                {user?.email || "-"}
+                {user.email || "-"}
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 rounded-full border border-amber-500/70 bg-amber-500/10 text-[10px] font-tech tracking-[0.18em] text-amber-200">
-                ROLE: {user?.role?.toUpperCase?.() || "BARBER"}
+                ROLE: {user.role.toUpperCase() || "BARBER"}
               </span>
             </div>
           </div>
@@ -675,11 +671,11 @@ export default function DashboardBarber() {
           <div className="h-px bg-gradient-to-r from-amber-500/40 via-amber-500/10 to-transparent my-2" />
 
           <div className="text-amber-100/80">
-            Profil ringkas(dummy):
+            Profile summary (dummy):
             <ul className="list-disc list-inside mt-1 space-y-1">
-              <li>Jam kerja preferensi pribadi.</li>
-              <li>Spesialisasi potongan / style favorit.</li>
-              <li>Link portofolio / sosial media jika ada.</li>
+              <li>Personal preferred working hours.</li>
+              <li>Specialized cuts / favorite styles.</li>
+              <li>Portfolio / social media links if available.</li>
             </ul>
           </div>
         </div>
@@ -688,14 +684,14 @@ export default function DashboardBarber() {
   );
 
   // ========================================================================
-  //  MAIN RENDER – COPY KONSEP DARI DASHBOARD ADMIN
+  //  MAIN RENDER  COPY KONSEP DARI DASHBOARD ADMIN
   // ========================================================================
   return (
     <MainLayout>
       <div className="relative min-h-screen bg-[#181411] text-amber-50 flex flex-col overflow-hidden pt-16 font-modern">
         {/* --- CSS INJECTION (PERSIS DARI DASHBOARD ADMIN) --- */}
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+          @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
           
           .font-royal { 
             font-family: 'Cinzel', serif; 
@@ -916,7 +912,7 @@ export default function DashboardBarber() {
                 )}
               </div>
               <div className="text-[11px] text-amber-100/75 font-modern max-w-xl">
-                Pantau antrian, pendapatan, dan review pelanggan disini.
+                Monitor queues, revenue, and customer reviews here.
               </div>
             </div>
           </motion.div>

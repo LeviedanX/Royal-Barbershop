@@ -7,13 +7,15 @@ export default function VideoSection() {
     {
       src: "/videos/barber1.mp4",
       title: "Taper Fade",
-      description: "Gradasi cukuran presisi dengan sentuhan styling modern. Menciptakan tampilan rapi yang tajam, elegan, dan cocok untuk segala suasana.",
+      description:
+        "Precision gradient cut with a modern finishdelivering a sharp, polished look suited for any setting.",
       duration: "13:26",
     },
     {
       src: "/videos/barber2.mp4",
       title: "Commar Hair",
-      description: "Kombinasi tekstur bervolume dengan penataan poni inward-curling yang presisi. Gaya ini membingkai wajah dengan sempurna untuk tampilan yang chic dan sophisticated.",
+      description:
+        "Voluminous texture paired with a precise inward fringe, perfectly framing the face for a chic, sophisticated profile.",
       duration: "07:40",
     },
   ];
@@ -33,7 +35,7 @@ export default function VideoSection() {
             The <span className="text-neutral-100">Showcase</span>
           </h2>
           <p className="text-xs md:text-sm text-neutral-400 max-w-lg font-light leading-relaxed">
-            Saksikan proses transformasi di <span className="text-amber-600 font-medium">Galeri Kami</span>. 
+            Watch each transformation unfold inside <span className="text-amber-600 font-medium">our Gallery</span>.
           </p>
         </div>
         
@@ -74,9 +76,9 @@ export default function VideoSection() {
                         src={v.src}
                         controls
                         className="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-                        poster="/images/poster-placeholder.jpg" // Opsional: tambahkan poster
+                        poster="/images/poster-placeholder.jpg" // Optional: add a poster
                     >
-                        Browser Anda tidak mendukung tag video.
+                        Your browser does not support the video tag.
                     </video>
 
                     {/* === DIGITAL OVERLAYS (HUD) === */}
@@ -99,7 +101,7 @@ export default function VideoSection() {
                              <div className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
                         </div>
                         
-                        {/* 5. Play Overlay Icon (Hilang saat controls aktif/diklik biasanya, ini visual saja) */}
+                        {/* 5. Play Overlay Icon (usually hidden when controls are active/clicked; visual only) */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                             <div className="w-12 h-12 rounded-full border border-amber-500/50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
                                 <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-amber-500 border-b-[6px] border-b-transparent ml-1"></div>

@@ -68,7 +68,7 @@ export default function QueueScreen() {
   const { queue, reload } = useQueuePolling({ autoStart: true, intervalMs: 4000 });
 
   useEffect(() => {
-    // animasi setiap kali data queue berubah (Logika asli dipertahankan)
+    // Animate each time queue data changes (original logic retained)
     if (!queue || queue.length === 0) return;
     gsap.from(".queue-row", {
       opacity: 0,
@@ -83,7 +83,7 @@ export default function QueueScreen() {
     <MainLayout>
       {/* --- CSS INJECTION (SHARED STYLES) --- */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
         
         .font-royal { font-family: 'Cinzel', serif; }
         .font-vintage { font-family: 'Italiana', serif; }
@@ -116,8 +116,11 @@ export default function QueueScreen() {
                  <span className="font-tech text-xs text-amber-500 tracking-[0.3em] uppercase"> </span>
               </motion.div>
 
-              <motion.h1 variants={revealVar} className="font-vintage text-4xl md:text-5xl text-slate-100 leading-tight">
-                Papan Antrian <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600">BARBERSHOP</span>
+              <motion.h1
+                variants={revealVar}
+                className="font-royal text-4xl md:text-5xl lg:text-6xl text-gold-gradient text-glow-gold tracking-[0.08em] leading-tight drop-shadow-[0_8px_20px_rgba(0,0,0,0.65)]"
+              >
+                Barbershop Queue Board
               </motion.h1>
 
             <motion.div variants={revealVar} className="mt-6 relative pl-6 group">
@@ -133,10 +136,9 @@ export default function QueueScreen() {
                     </span>
                 </div>
 
-                {/* 3. The Content (Copywriting yang lebih Profesional) */}
+                {/* 3. The Content (Professional copy) */}
                 <p className="font-modern text-xs md:text-sm text-slate-400 max-w-xl leading-[1.8]">
-                  Dioptimalkan untuk layanan anda  di <span className="text-slate-200 font-semibold border-b border-slate-600 border-dashed">BARBERSHOP</span> kami. 
-                  Sistem melakukan sinkronisasi data antrian secara <span className="text-amber-400 font-tech text-[10px] tracking-wider font-bold">REAL-TIME</span> tanpa perlu intervensi manual.
+                  Optimized for your barbershop operations. The system syncs queue data in <span className="text-amber-400 font-tech text-[10px] tracking-wider font-bold">REAL-TIME</span> without manual intervention.
                 </p>
 
                 {/* 4. Subtle Background Gradient */}
@@ -165,11 +167,11 @@ export default function QueueScreen() {
                <div className="flex items-center gap-3">
                  <div className="h-[1px] w-6 bg-gradient-to-r from-amber-500 to-transparent" />
                  <h3 className="font-vintage text-2xl text-slate-200">
-                   Antrian Hari Ini
+                   Today's Queue
                  </h3>
                </div>
                <div className="font-tech text-[10px] text-amber-500/60 mt-1 pl-9 tracking-widest uppercase">
-                 Total: {queue.length} • Auto Refresh 4s
+                 Total: {queue.length} - Auto Refresh 4s
                </div>
             </div>
 
@@ -191,8 +193,8 @@ export default function QueueScreen() {
                   <th className="px-4 py-4 border-b border-white/10 text-left">No</th>
                   <th className="px-4 py-4 border-b border-white/10 text-left">Customer</th>
                   <th className="px-4 py-4 border-b border-white/10 text-left">Barber</th>
-                  <th className="px-4 py-4 border-b border-white/10 text-left">Layanan</th>
-                  <th className="px-4 py-4 border-b border-white/10 text-left">Jadwal</th>
+                  <th className="px-4 py-4 border-b border-white/10 text-left">Service</th>
+                  <th className="px-4 py-4 border-b border-white/10 text-left">Schedule</th>
                   <th className="px-4 py-4 border-b border-white/10 text-left">Status</th>
                 </tr>
               </thead>
@@ -200,7 +202,7 @@ export default function QueueScreen() {
                 {queue.length === 0 && (
                   <tr>
                     <td colSpan={6} className="px-4 py-12 text-slate-500 text-xs italic font-tech border-b border-white/5">
-                      -- Belum ada antrian untuk hari ini --
+                      -- No queue entries for today --
                     </td>
                   </tr>
                 )}
@@ -213,17 +215,17 @@ export default function QueueScreen() {
                       {q.queue_number}
                     </td>
                     <td className="px-4 py-4 text-left text-slate-200 font-semibold tracking-wide">
-                      {q.customer?.name || "-"}
+                      {q.customer.name || "-"}
                     </td>
                     <td className="px-4 py-4 text-left text-slate-300">
                       {q.barber?.display_name || q.barber?.user?.name || "-"}
                     </td>
                     <td className="px-4 py-4 text-left text-slate-400 text-xs uppercase tracking-wide">
-                      {q.service?.name || "-"}
+                      {q.service.name || "-"}
                     </td>
                     <td className="px-4 py-4 text-left text-slate-400 font-tech text-xs">
                       {q.scheduled_at &&
-                        new Date(q.scheduled_at).toLocaleTimeString("id-ID", {
+                        new Date(q.scheduled_at).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}

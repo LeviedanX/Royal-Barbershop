@@ -9,7 +9,7 @@ export const announcementApi = {
 
   // === admin only (dipakai di DashboardAdmin) ===
   async create(payload) {
-    // { title, content, starts_at?, ends_at?, target_role?, is_active? }
+    // { title, content, starts_at, ends_at, target_role, is_active }
     const { data } = await http.post("/announcements", payload);
     return data;
   },

@@ -117,7 +117,7 @@ export default function GalleryPage() {
     <MainLayout>
       {/* --- CSS INJECTION (SHARED STYLES) --- */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
         
         .font-royal { font-family: 'Cinzel', serif; }
         .font-vintage { font-family: 'Italiana', serif; }
@@ -158,7 +158,7 @@ export default function GalleryPage() {
              </motion.div>
 
              <motion.h1 variants={revealVar} className="font-vintage text-4xl md:text-5xl lg:text-6xl text-slate-100 leading-tight">
-               Galeri <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600">HAIRSTYLE</span>
+               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600">Hairstyle</span> Gallery
              </motion.h1>
 
              <motion.div variants={revealVar} className="mt-6 relative pl-6 group">
@@ -168,9 +168,9 @@ export default function GalleryPage() {
 
                 {/* 2. The Text Content */}
                 <p className="font-modern text-sm md:text-base text-slate-400 leading-[1.8] max-w-2xl tracking-wide">
-                    Menyelami koleksi visual potongan rambut berkelas. 
+                    Explore a curated gallery of elevated cuts.
                     <br className="hidden md:block" />
-                    Temukan inspirasi yang tidak hanya mengubah penampilan, tetapi <span className="text-slate-200 font-vintage italic text-lg px-1">mendefinisikan ulang</span> <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 drop-shadow-sm tracking-wider">SIGNATURE STYLE</span> Anda.
+                    Discover inspiration that not only refreshes your look but <span className="text-slate-200 font-vintage italic text-lg px-1">redefines</span> your <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 drop-shadow-sm tracking-wider">SIGNATURE STYLE</span>.
                 </p>
 
                 {/* 3. Subtle Background Glow (Efek saat hover) */}
@@ -227,7 +227,7 @@ export default function GalleryPage() {
 
                   {/* 2. Main Title */}
                   <h3 className="relative z-10 font-vintage text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 tracking-wide drop-shadow-sm">
-                    Galeri Koleksi
+                    Signature Collection
                   </h3>
 
                   {/* 3. Subtitle with Gold Accent Line */}

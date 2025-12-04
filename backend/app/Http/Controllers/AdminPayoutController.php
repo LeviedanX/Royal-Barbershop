@@ -19,7 +19,7 @@ class AdminPayoutController extends Controller
 
     /**
      * GET /api/admin/payouts
-     * List semua payout (simulasi withdraw ke barber).
+     * List payouts (simulated withdrawals to barbers).
      */
     public function index(Request $request)
     {
@@ -34,7 +34,7 @@ class AdminPayoutController extends Controller
 
     /**
      * POST /api/admin/payouts
-     * Admin membuat payout (misal dari saldo internal ke akun barber).
+     * Admin creates a payout (for example, from internal balance to a barber account).
      */
     public function store(Request $request)
     {
@@ -67,7 +67,7 @@ class AdminPayoutController extends Controller
 
     /**
      * PATCH /api/admin/payouts/{payout}
-     * Update status payout (requested → approved/rejected/paid).
+     * Update payout status (requested -> approved/rejected/paid).
      */
     public function updateStatus(Request $request, Payout $payout)
     {
@@ -105,9 +105,9 @@ class AdminPayoutController extends Controller
         return response()->json($payout);
     }
 
-        /**
+    /**
      * DELETE /api/admin/payouts/{payout}
-     * Hapus payout dari riwayat simulasi.
+     * Remove a payout from the simulation history.
      */
     public function destroy(Request $request, Payout $payout)
     {

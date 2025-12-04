@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 
 class AdminAccessLogController extends Controller
 {
-    protected function ensureAdmin(Request $request)
+    protected function ensureAdmin(Request $request): void
     {
         $user = $request->user();
         if (!$user || $user->role !== 'admin') {
             abort(403, 'Forbidden');
         }
     }
-
 
     public function index(Request $request)
     {
@@ -30,7 +29,7 @@ class AdminAccessLogController extends Controller
                     'id'          => $log->id,
                     'user_name'   => optional($log->user)->name,
                     'user_email'  => optional($log->user)->email,
-                    'ip_address'  => $log->ip,           // kolom di DB: ip ➜ frontend: ip_address
+                    'ip_address'  => $log->ip, // DB column: ip -> frontend expects ip_address
                     'method'      => $log->method,
                     'path'        => $log->path,
                     'user_agent'  => $log->user_agent,

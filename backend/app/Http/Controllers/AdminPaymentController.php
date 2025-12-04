@@ -45,9 +45,9 @@ class AdminPaymentController extends Controller
     {
         $this->ensureAdmin($request);
 
-        // Opsional: kalau mau, cek dulu statusnya (misal jangan hapus yang sudah settled)
+        // Optional: validate status before deleting (e.g., block deleting settled payments)
         // if (in_array($payment->transaction_status, ['settlement', 'capture'])) {
-        //     return response()->json(['message' => 'Tidak boleh menghapus payment yang sudah settlement'], 422);
+        //     return response()->json(['message' => 'Do not delete payments that are already settled'], 422);
         // }
 
         $payment->delete();
@@ -58,7 +58,7 @@ class AdminPaymentController extends Controller
     }
 
     /**
-     * Admin membuat payment manual (misal offline/penyesuaian).
+     * Admin creates a manual payment (for example, offline/adjustment).
      */
     public function store(Request $request)
     {
@@ -98,7 +98,7 @@ class AdminPaymentController extends Controller
     }
 
     /**
-     * Admin update data payment (status/tanggal/amount).
+     * Admin updates payment data (status/date/amount).
      */
     public function update(Request $request, Payment $payment)
     {

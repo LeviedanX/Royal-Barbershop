@@ -9,7 +9,7 @@ class ServiceController extends Controller
 {
     /**
      * GET /api/services
-     * List semua layanan (bisa dipakai customer saat pilih paket potong, bundling, dll).
+     * List all services (used by customers when picking packages/bundles).
      */
     public function index()
     {
@@ -20,7 +20,7 @@ class ServiceController extends Controller
 
     /**
      * GET /api/services/{service}
-     * Detail satu layanan, termasuk relasi ke hairstyles default (kalau mau).
+     * Detail for a service, including related default hairstyles if needed.
      */
     public function show(Service $service)
     {
@@ -30,9 +30,8 @@ class ServiceController extends Controller
     }
 
     /**
-     * (Opsional) POST /api/services
-     * Bisa kamu pakai untuk admin menambah layanan dari dashboard.
-     * Kalau belum butuh untuk UAS, endpoint ini boleh nggak dipakai di routes.
+     * (Optional) POST /api/services
+     * Can be used by admin to add services from the dashboard.
      */
     public function store(Request $request)
     {
@@ -55,7 +54,7 @@ class ServiceController extends Controller
     }
 
     /**
-     * (Opsional) PUT /api/services/{service}
+     * (Optional) PUT /api/services/{service}
      */
     public function update(Request $request, Service $service)
     {
@@ -78,7 +77,7 @@ class ServiceController extends Controller
     }
 
     /**
-     * (Opsional) DELETE /api/services/{service}
+     * (Optional) DELETE /api/services/{service}
      */
     public function destroy(Request $request, Service $service)
     {

@@ -2,38 +2,35 @@
 import { http } from "./http";
 
 export const bookingApi = {
-  // papan antrian publik / global
+  // Public/global queue board
   async queue() {
     const { data } = await http.get("/queue");
     return data;
   },
 
-  // booking baru (customer)
+  // New booking (customer)
   async create(payload) {
-    // payload: { barber_id, service_id, hairstyle_id?, scheduled_at, coupon_code?, note? }
+    // payload: { barber_id, service_id, hairstyle_id, scheduled_at, coupon_code, note }
     const { data } = await http.post("/bookings", payload);
-    return data; // berisi barber/service terpilih + queue info
+    return data; // includes selected barber/service + queue info
   },
 
-  // booking milik user saat ini (customer / barber / admin tergantung backend)
+  // Bookings for the current user (customer / barber / admin depending on backend)
   async myBookings() {
     const { data } = await http.get("/bookings/my");
     return data;
   },
 
-  // update status booking (barber/admin)
+  // Update booking status (barber/admin)
   async updateStatus(id, status) {
     const { data } = await http.patch(`/bookings/${id}/status`, { status });
     return data;
   },
 
-  // tambah review setelah selesai
+  // Add review after completion
   async addReview(bookingId, payload) {
     // payload: { rating, comment }
-    const { data } = await http.post(
-      `/bookings/${bookingId}/review`,
-      payload
-    );
+    const { data } = await http.post(`/bookings/${bookingId}/review`, payload);
     return data;
   },
 };

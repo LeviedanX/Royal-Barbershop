@@ -9,7 +9,7 @@ class BusinessHoursSeeder extends Seeder
 {
     public function run(): void
     {
-        // 0 = Minggu, 1 = Senin, ..., 6 = Sabtu
+        // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
         $default = [
             0, 1, 2, 3, 4, 5, 6,
         ];

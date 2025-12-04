@@ -130,13 +130,13 @@ export default function HelpCenterPage() {
     }
   };
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user.role === "admin";
 
   return (
     <MainLayout>
       {/* --- GLOBAL STYLES & FONTS --- */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
         .font-royal { font-family: 'Cinzel', serif; }
         .font-vintage { font-family: 'Italiana', serif; }
@@ -188,9 +188,9 @@ export default function HelpCenterPage() {
             </motion.h1>
 
             <motion.p variants={revealVar} className="mt-4 font-modern text-sm text-slate-400 max-w-xl leading-relaxed border-l-2 border-amber-900/30 pl-4">
-              {isAdmin 
-                ? "Akses eksklusif panel admin. Kelola permintaan klien dengan presisi dan kecepatan tinggi." 
-                : "Layanan prioritas untuk Anda. Sampaikan kendala, kami hadirkan solusi instan."}
+              {isAdmin
+                ? "Exclusive admin access. Manage client requests with precision and speed."
+                : "Priority support for you. Share issues, we deliver instant solutions."}
             </motion.p>
           </motion.div>
         </header>
@@ -233,7 +233,7 @@ export default function HelpCenterPage() {
                <div className="flex-1 overflow-y-auto custom-scroll p-2 space-y-1 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
                   {tickets.length === 0 && (
                     <div className="h-full flex flex-col items-center justify-center text-slate-600 space-y-2 opacity-50">
-                      <div className="text-4xl">📭</div>
+                      <div className="text-4xl"></div>
                       <span className="font-modern text-xs">No active tickets</span>
                     </div>
                   )}
@@ -242,27 +242,27 @@ export default function HelpCenterPage() {
                     const isActive = activeTicket?.id === t.id;
                     return (
                       <motion.button
-                        key={t.id}
+                        key={t.id || Math.random()}
                         onClick={() => handleOpenTicket(t)}
                         className={`w-full text-left p-3.5 rounded transition-all duration-300 relative overflow-hidden group/item border-l-2 ${
-                          isActive 
-                            ? "bg-gradient-to-r from-amber-900/20 to-transparent border-l-amber-500" 
+                          isActive
+                            ? "bg-gradient-to-r from-amber-900/20 to-transparent border-l-amber-500"
                             : "bg-transparent hover:bg-white/5 border-l-transparent hover:border-l-slate-600"
                         }`}
                       >
                          <div className="flex justify-between items-start mb-1.5">
                            <span className={`font-tech text-[10px] tracking-wider uppercase ${isActive ? 'text-amber-400' : 'text-slate-500'}`}>
-                             ID: {t.id}
+                             ID: {t.id ?? "-"}
                            </span>
                            <span className={`text-[9px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-widest border ${
                              t.status === 'open' ? 'text-emerald-400 border-emerald-900 bg-emerald-900/10' : 
                              'text-slate-400 border-slate-800 bg-slate-900/30'
                            }`}>
-                             {t.status}
+                             {t.status || "open"}
                            </span>
                          </div>
                          <h4 className={`font-modern font-semibold text-sm truncate ${isActive ? 'text-amber-50' : 'text-slate-300 group-hover/item:text-white'}`}>
-                           {t.subject}
+                           {t.subject || "Untitled"}
                          </h4>
                       </motion.button>
                     )
@@ -296,7 +296,7 @@ export default function HelpCenterPage() {
                       required
                     />
                     <label className="absolute left-4 top-3 text-slate-500 text-xs font-tech uppercase tracking-widest transition-all peer-focus:-top-2.5 peer-focus:left-2 peer-focus:text-[9px] peer-focus:text-amber-500 peer-focus:bg-[#0a0a0a] peer-focus:px-1 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:text-[9px] peer-[:not(:placeholder-shown)]:text-amber-500 peer-[:not(:placeholder-shown)]:bg-[#0a0a0a] peer-[:not(:placeholder-shown)]:px-1 pointer-events-none">
-                      Judul
+                      Subject
                     </label>
                   </div>
                   
@@ -310,18 +310,18 @@ export default function HelpCenterPage() {
                       required
                     />
                     <label className="absolute left-4 top-3 text-slate-500 text-xs font-tech uppercase tracking-widest transition-all peer-focus:-top-2.5 peer-focus:left-2 peer-focus:text-[9px] peer-focus:text-amber-500 peer-focus:bg-[#0a0a0a] peer-focus:px-1 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:text-[9px] peer-[:not(:placeholder-shown)]:text-amber-500 peer-[:not(:placeholder-shown)]:bg-[#0a0a0a] peer-[:not(:placeholder-shown)]:px-1 pointer-events-none">
-                      Pesan
+                      Message
                     </label>
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-50 font-bold font-tech text-xs tracking-[0.2em] uppercase rounded shadow-[0_4px_15px_rgba(180,83,9,0.2)] transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
-                  >
-                    {loading ? "Transmitting..." : "Submit Ticket"}
-                  </button>
-                </form>
+                  className="w-full py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-amber-50 font-bold font-tech text-xs tracking-[0.2em] uppercase rounded shadow-[0_4px_15px_rgba(180,83,9,0.2)] transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
+                >
+                  {loading ? "Transmitting..." : "Submit Ticket"}
+                </button>
+              </form>
               </motion.div>
             )}
           </div>
@@ -340,17 +340,19 @@ export default function HelpCenterPage() {
 
              {/* HEADER DETAIL */}
              <div className="p-6 border-b border-white/5 bg-gradient-to-b from-white/[0.03] to-transparent flex justify-between items-end z-10">
-               <div>
-                  <h2 className="font-vintage text-3xl text-slate-100 tracking-wide">
-                    {activeTicket ? activeTicket.subject : "Papan Komunikasi"}
-                  </h2>
+                <div>
+                   <h2 className="font-vintage text-3xl text-slate-100 tracking-wide">
+                      {activeTicket?.subject || "Communication Board"}
+                   </h2>
                   <div className="flex items-center gap-4 mt-2">
 
                      {activeTicket && (
                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
-                         activeTicket.status === 'open' ? 'border-emerald-500/30 text-emerald-400' : 'border-slate-700 text-slate-500'
+                         activeTicket.status === 'open'
+                           ? 'border-emerald-500/30 text-emerald-400'
+                           : 'border-slate-700 text-slate-500'
                        }`}>
-                         {activeTicket.status}
+                         {activeTicket?.status || "open"}
                        </span>
                      )}
                   </div>
@@ -358,7 +360,7 @@ export default function HelpCenterPage() {
                {activeTicket && (
                  <div className="hidden md:block text-right">
                    <div className="font-tech text-4xl text-white/5 font-bold leading-none">
-                     #{activeTicket.id.toString().padStart(3, '0')}
+                     #{(activeTicket?.id ?? 0).toString().padStart(3, "0")}
                    </div>
                  </div>
                )}
@@ -370,17 +372,17 @@ export default function HelpCenterPage() {
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] opacity-20 pointer-events-none" />
                 
                 {!activeTicket ? (
-                   <div className="h-full flex flex-col items-center justify-center text-slate-700 space-y-4">
-                     <div className="w-24 h-24 rounded-full border border-dashed border-slate-800 flex items-center justify-center animate-[spin_10s_linear_infinite]">
-                       <div className="w-20 h-20 rounded-full border border-slate-800" />
-                     </div>
-                     <p className="font-tech text-xs tracking-[0.3em] uppercase opacity-50">Menunggu dimuat...</p>
-                   </div>
-                ) : (
+                 <div className="h-full flex flex-col items-center justify-center text-slate-700 space-y-4">
+                    <div className="w-24 h-24 rounded-full border border-dashed border-slate-800 flex items-center justify-center animate-[spin_10s_linear_infinite]">
+                      <div className="w-20 h-20 rounded-full border border-slate-800" />
+                    </div>
+                    <p className="font-tech text-xs tracking-[0.3em] uppercase opacity-50">Loading...</p>
+                  </div>
+               ) : (
                   <>
                     <AnimatePresence>
-                      {activeTicket.messages?.map((m) => {
-                        const isAdminMsg = m.sender?.role === "admin";
+                      {(activeTicket?.messages || []).map((m) => {
+                        const isAdminMsg = m.sender.role === "admin";
                         return (
                           <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -398,20 +400,20 @@ export default function HelpCenterPage() {
                                    </>
                                  ) : (
                                    <>
-                                     <span className="font-bold text-slate-300">{m.sender?.name}</span>
+                                     <span className="font-bold text-slate-300">{m.sender.name}</span>
                                      <span>{new Date(m.created_at).toLocaleString("id-ID")}</span>
                                    </>
                                  )}
                                </div>
 
-                               {/* Bubble */}
-                               <div className={`
-                                 p-5 backdrop-blur-md border relative
-                                 ${isAdminMsg 
+                              {/* Bubble */}
+                              <div className={`
+                                p-5 backdrop-blur-md border relative
+                                ${isAdminMsg 
                                    ? "bg-gradient-to-br from-[#1a1500] to-black border-amber-900/40 rounded-t-xl rounded-bl-xl text-amber-50 shadow-[0_5px_15px_rgba(251,191,36,0.05)]" 
                                    : "bg-[#111] border-slate-800 rounded-t-xl rounded-br-xl text-slate-300"
-                                 }
-                               `}>
+                                }
+                              `}>
                                  <p className="font-modern text-sm leading-7 whitespace-pre-wrap">
                                    {m.message}
                                  </p>

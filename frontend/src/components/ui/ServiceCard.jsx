@@ -4,7 +4,7 @@ import React from "react";
 export default function ServiceCard({ service, selected, onSelect }) {
   if (!service) return null;
 
-  const price = service.base_price ?? service.price ?? 0;
+  const price = (service.base_price ?? service.price ?? 0) || 0;
   const isBundle = !!service.is_bundle;
   const duration = service.duration_minutes;
 
@@ -37,7 +37,7 @@ export default function ServiceCard({ service, selected, onSelect }) {
           selected
             ? "border-amber-500/60 shadow-[0_0_15px_rgba(245,158,11,0.1)] translate-y-[-1px]"
             : "border-neutral-800 group-hover:border-amber-500/30 group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.6)]",
-        ].join(" ")}
+      ].join(" ")}
       >
         {/* --- TEXTURES --- */}
         <div className="pointer-events-none absolute inset-0 z-0">
@@ -104,7 +104,7 @@ export default function ServiceCard({ service, selected, onSelect }) {
           {/* Bottom Row: Desc & Duration */}
           <div className="flex items-center justify-between gap-3">
              <p className="text-[9px] leading-relaxed text-neutral-500 font-sans line-clamp-1 flex-1 group-hover:text-neutral-400 transition-colors">
-               {service.description || "Layanan grooming premium."}
+              {service.description || "Premium grooming service."}
              </p>
              
              {duration && (

@@ -19,10 +19,10 @@ export default function BarberCard({ barber, onSelect }) {
 
   const avgRating = barber.avg_rating ?? barber.rating ?? 0;
   const totalOrders = barber.total_completed ?? barber.total_orders ?? 0;
-  const price = Number(barber.base_price ?? barber.price ?? 0);
+  const price = Number((barber.base_price ?? barber.price ?? 0) || 0);
   const name = barber.display_name || barber.user?.name || "Unknown Barber";
-  const initials = name.match(/\b(\w)/g)?.join("").slice(0, 2) || "BR";
-  const avatarUrl = barber.avatar_url || barber.user?.avatar_url;
+  const initials = name.match(/\b(\w)/g).join("").slice(0, 2) || "BR";
+  const avatarUrl = barber.avatar_url || barber.user.avatar_url;
 
   const handleSelect = () => {
     if (onSelect) onSelect(barber);
@@ -56,7 +56,7 @@ export default function BarberCard({ barber, onSelect }) {
            {/* Rank Badge (Brass Tag Style) */}
            <div className="flex items-center gap-1.5 rounded-sm border border-amber-700/50 bg-gradient-to-b from-[#2a221d] to-[#181411] px-2.5 py-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
              <span className="font-serif text-[10px] font-bold uppercase tracking-wider text-amber-500">
-               #{barber.rank ?? "-"}
+               #{barber.rank || "-"}
              </span>
              <span className="h-2.5 w-[1px] bg-amber-900/50"></span>
              <span className="font-serif text-[9px] font-medium text-amber-200/60 uppercase tracking-wide">Master Barber</span>

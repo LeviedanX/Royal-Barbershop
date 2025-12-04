@@ -9,7 +9,7 @@ class GalleryController extends Controller
 {
     /**
      * GET /api/hairstyles
-     * List semua gaya rambut + mapping ke service (kalau ada).
+     * List all hairstyles and map to service if available.
      */
     public function index()
     {

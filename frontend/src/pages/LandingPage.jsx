@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import RealtimeClock from "../components/ui/RealtimeClock";
 
-// 🎯 URL Spline Robot
+//  URL Spline Robot
 const SPLINE_SCENE_URL =
   "https://prod.spline.design/PtiqawGsIZxgX8o4/scene.splinecode";
 
@@ -75,7 +75,7 @@ export default function LandingPage() {
     <div className="relative w-full h-screen bg-[#050505] text-slate-200 overflow-hidden font-sans selection:bg-amber-500/30 selection:text-amber-100">
       {/* --- CSS INJECTION --- */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2family=Cinzel:wght@400;700&family=Italiana&family=Manrope:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
         
         .font-royal { font-family: 'Cinzel', serif; }
         .font-vintage { font-family: 'Italiana', serif; }
@@ -120,7 +120,7 @@ export default function LandingPage() {
       </div>
 
       {/* =========================================
-          LAYER 1: HUD CLOCK – BOTTOM RIGHT, TOPMOST
+          LAYER 1: HUD CLOCK  BOTTOM RIGHT, TOPMOST
          ========================================= */}
       <motion.div
         initial={{ y: 40, opacity: 0 }}
@@ -293,10 +293,10 @@ export default function LandingPage() {
               variants={revealVar}
               className="font-vintage text-5xl sm:text-7xl md:text-8xl text-slate-100 leading-[0.9]"
             >
-              Kualitas & Hasil <br />
+              Quality & Results <br />
               <span className="relative inline-block">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-700 italic pr-2">
-                  Terbaik
+                  Refined
                 </span>
                 {/* Glow behind text */}
                 <span className="absolute inset-0 bg-amber-500/20 blur-xl -z-10" />
@@ -316,32 +316,32 @@ export default function LandingPage() {
               {/* 2. Small Label (Tagline Kecil) */}
               <div className="mb-2 flex items-center gap-2">
                 <span className="font-tech text-[9px] text-amber-500 tracking-[0.25em] uppercase">
-                  FILOSOFI KAMI
+                  OUR PHILOSOPHY
                 </span>
                 <div className="h-[1px] w-4 bg-amber-500/30" />
               </div>
 
               {/* 3. The Main Text */}
               <p className="font-modern text-sm sm:text-base md:text-lg text-slate-400 max-w-lg leading-[1.8] tracking-wide">
-                Dimana kemewahan{" "}
+                Where timeless{" "}
                 <span className="text-slate-200 font-serif italic">
-                  klasik
+                  classics
                 </span>{" "}
-                bertemu dengan presisi{" "}
+                meet{" "}
                 <span className="text-slate-200 font-tech text-xs align-middle">
-                  FUTURISTIK
+                  FUTURISTIC
                 </span>
-                .
+                precision.
                 <br className="hidden sm:block" />
-                Kami tidak sekadar memotong rambut; kami merancang ulang{" "}
+                We do more than cut hair; we re-architect your{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500 font-bold drop-shadow-sm">
-                  Karisma
+                  Charisma
                 </span>{" "}
                 &{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500 font-bold drop-shadow-sm">
-                  Identitas
+                  Identity
                 </span>{" "}
-                Anda melalui detail yang tak tertandingi.
+                through unmatched detail.
               </p>
 
               {/* 4. Background Ambience */}
@@ -369,7 +369,7 @@ export default function LandingPage() {
 
                 <div className="relative px-8 py-4 flex items-center justify-center gap-3">
                   <span className="font-tech text-sm text-amber-500 font-bold tracking-[0.2em] uppercase group-hover:text-black transition-colors z-10">
-                    MASUK
+                    ENTER
                   </span>
                   {/* Arrow Icon */}
                   <div className="w-5 h-5 flex items-center justify-center bg-amber-900/50 rounded-full group-hover:bg-black/20 transition-colors z-10">
@@ -402,10 +402,10 @@ export default function LandingPage() {
               <div className="relative flex items-center gap-3">
                 <div className="w-2 h-2 bg-slate-500 rounded-full group-hover:bg-amber-400 group-hover:shadow-[0_0_8px_#fbbf24] transition-all duration-300" />
                 <span className="font-vintage text-lg text-slate-300 italic tracking-wide group-hover:text-white transition-colors">
-                  Lihat Galeri
+                  View Gallery
                 </span>
                 <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-amber-400">
-                  →
+                  
                 </span>
               </div>
             </Link>

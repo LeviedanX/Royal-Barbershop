@@ -133,7 +133,7 @@ export default function LandingPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-amber-600/20 blur-[40px] rounded-full opacity-50 group-hover:opacity-70 transition-opacity duration-700" />
 
           {/* Main Glass Panel */}
-          <div className="relative bg-[#050505]/90 backdrop-blur-xl border border-white/10 rounded-tl-lg shadow-2xl overflow-hidden min-w-[300px]">
+          <div className="relative bg-[#050505]/90 backdrop-blur-xl border border-white/10 rounded-tl-lg shadow-2xl overflow-hidden w-[250px] md:w-[300px]">
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay" />
 
@@ -183,7 +183,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="w-full h-full lg:scale-110 lg:translate-x-10 translate-y-8"
+          className="w-full h-full scale-90 sm:scale-100 lg:scale-110 translate-y-4 sm:translate-y-6 lg:translate-y-8 translate-x-0 lg:translate-x-10"
         >
           {hasSplineScene && (
             <Spline
@@ -235,7 +235,7 @@ export default function LandingPage() {
           <div className="flex flex-col gap-2">
             <motion.div
               variants={revealVar}
-              className="flex items-center gap-5 group cursor-pointer"
+              className="flex items-center gap-3 sm:gap-5 group cursor-pointer"
             >
               {/* 1. Animated Emblem (Diamond Shape) */}
               <div className="relative w-14 h-14 flex items-center justify-center">
